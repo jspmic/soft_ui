@@ -14,66 +14,86 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String? username = "Nom d'utilisateur...";
   String? pssw = "Mot de passe...";
+  bool passwordVisible = true;
+  bool isClicked = false;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: "Soft",
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
           useMaterial3: true,
+          primarySwatch: Colors.green
         ),
         home: Scaffold(
+          resizeToAvoidBottomInset: false,
           backgroundColor: Colors.grey[900],
           body: Container(
             padding: const EdgeInsets.all(20.0),
             margin: const EdgeInsets.all(20.0),
             color: Colors.grey[900],
-            child: Column(
-              children: [
-                Container(
-                  child: Image.asset("assets/app-icon.png")
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                    hintText: "$username",
-                  ),
-                  cursorColor: Colors.amber,
-                  cursorHeight: 15.0,
-                  cursorWidth: 1.0,
-                ),
-                const SizedBox(height: 30.0),
-                TextField(
-                  decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(20.0))),
-                      hintText: "$pssw"),
-                  cursorColor: Colors.amber,
-                  cursorHeight: 15.0,
-                  cursorWidth: 1.0,
-                ),
-                const SizedBox(
-                  height: 30.0,
-                ),
-                TextButton(
-                    onPressed: () {},
-                    style: const ButtonStyle(
-                        backgroundColor:
-                            WidgetStatePropertyAll(Colors.lightGreen),
-                        elevation: WidgetStatePropertyAll(50.0)),
-                    child: const Text(
-                      "Se connecter",
-                      style: TextStyle(color: Colors.black, fontSize: 15),
-                    ))
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                  children: [
+                    SizedBox(height: 70.0,),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset("assets/drawer.png",
+                        fit: BoxFit.cover,
+                        width: 200,
+                        height: 200),
+                      ),
+                    SizedBox(height: 70.0,),
+                    TextField(
+                      style: TextStyle(
+                        color: Colors.grey[300]
+                      ),
+                      decoration: InputDecoration(
+                        hintText: "$username",
+                        suffixIcon: Icon(Icons.person_2_rounded)
+                      ),
+                      cursorColor: Colors.amber,
+                      cursorHeight: 15.0,
+                      cursorWidth: 1.0,
+                    ),
+                    const SizedBox(height: 30.0),
+                    TextField(
+                      obscureText: !passwordVisible,
+                      style: TextStyle(
+                        color: Colors.grey[300]
+                      ),
+                      decoration: InputDecoration(
+                          hintText: "$pssw",
+                        suffixIcon: IconButton(icon: Icon(passwordVisible ? Icons.visibility : Icons.visibility_off),
+                          onPressed: (){
+                          setState(() {
+                            passwordVisible = !passwordVisible;
+                          });
+                          },
+                      )),
+                      cursorColor: Colors.amber,
+                      cursorHeight: 15.0,
+                      cursorWidth: 1.0,
+                    ),
+                    const SizedBox(
+                      height: 60.0,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            isClicked = !isClicked;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isClicked? Colors.lightGreenAccent : Colors.lightGreen
+                        ),
+                        child: const Text(
+                          "Se connecter",
+                          style: TextStyle(color: Colors.black, fontSize: 15),
+                        ))
+              ])))
             ),
-          ),
-        ));
+          );
   }
 }
