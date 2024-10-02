@@ -31,9 +31,8 @@ class _HomeState extends State<Home> {
             color: Colors.grey[900],
             child: Column(
               children: [
-                const Text(
-                  "Bienvenue",
-                  style: TextStyle(color: Colors.white, fontSize: 30),
+                Container(
+                  child: Image.asset("assets/app-icon.png")
                 ),
                 const SizedBox(
                   height: 40,
