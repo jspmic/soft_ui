@@ -1,99 +1,124 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:Soft/excel_fields.dart';
+import 'package:Soft/rest.dart';
+import 'package:Soft/screen2.dart';
 
-void main() => runApp(const Home());
+void main() => runApp(const Login());
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Login> createState() => _LoginState();
 }
 
-class _HomeState extends State<Home> {
-  String? username = "Nom d'utilisateur...";
-  String? pssw = "Mot de passe...";
-  bool passwordVisible = true;
-  bool isClicked = false;
+class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/second': (context) => const Screen2()
+        },
         title: "Soft",
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-          useMaterial3: true,
-          primarySwatch: Colors.green
-        ),
-        home: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Colors.grey[900],
-          body: Container(
-            padding: const EdgeInsets.all(20.0),
-            margin: const EdgeInsets.all(20.0),
-            color: Colors.grey[900],
-            child: SingleChildScrollView(
-              child: Column(
-                  children: [
-                    SizedBox(height: 70.0,),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.asset("assets/drawer.png",
-                        fit: BoxFit.cover,
-                        width: 200,
-                        height: 200),
-                      ),
-                    SizedBox(height: 70.0,),
-                    TextField(
-                      style: TextStyle(
-                        color: Colors.grey[300]
-                      ),
-                      decoration: InputDecoration(
-                        hintText: "$username",
-                        suffixIcon: Icon(Icons.person_2_rounded)
-                      ),
-                      cursorColor: Colors.amber,
-                      cursorHeight: 15.0,
-                      cursorWidth: 1.0,
-                    ),
-                    const SizedBox(height: 30.0),
-                    TextField(
-                      obscureText: !passwordVisible,
-                      style: TextStyle(
-                        color: Colors.grey[300]
-                      ),
-                      decoration: InputDecoration(
-                          hintText: "$pssw",
-                        suffixIcon: IconButton(icon: Icon(passwordVisible ? Icons.visibility : Icons.visibility_off),
-                          onPressed: (){
-                          setState(() {
-                            passwordVisible = !passwordVisible;
-                          });
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+            useMaterial3: true,
+            primarySwatch: Colors.green),
+        home: LoginPage()
+    );
+  }
+}
+class LoginPage extends StatefulWidget{
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  String username = "";
+
+  String pssw = "";
+
+  bool passwordVisible = true;
+
+  bool isClicked = false;
+
+  final _uname = TextEditingController();
+
+  final _pssw = TextEditingController();
+
+  @override
+  Widget build(BuildContext context){
+      return
+        Container(
+          child: Scaffold(
+            //resizeToAvoidBottomInset: false,
+            backgroundColor: Colors.grey[900],
+            body: Container(
+                padding: const EdgeInsets.all(20.0),
+                margin: const EdgeInsets.all(20.0),
+                color: Colors.grey[900],
+                child: SingleChildScrollView(
+                    child: Column(children: [
+                  SizedBox(
+                    height: 70.0,
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset("assets/drawer.png",
+                        fit: BoxFit.cover, width: 200, height: 200),
+                  ),
+                  SizedBox(
+                    height: 70.0,
+                  ),
+                  TextField(
+                    style: TextStyle(color: Colors.grey[300]),
+                    controller: _uname,
+                    decoration: InputDecoration(
+                        hintText: "Nom d'utilisateur...",
+                        suffixIcon: Icon(Icons.person_2_rounded)),
+                    cursorColor: Colors.amber,
+                    cursorHeight: 15.0,
+                    cursorWidth: 1.0,
+                  ),
+                  const SizedBox(height: 30.0),
+                  TextField(
+                    obscureText: !passwordVisible,
+                    style: TextStyle(color: Colors.grey[300]),
+                    controller: _pssw,
+                    decoration: InputDecoration(
+                        hintText: "Mot de passe...",
+                        suffixIcon: IconButton(
+                          icon: Icon(passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                          onPressed: () {
+                            setState(() {
+                              passwordVisible = !passwordVisible;
+                            });
                           },
-                      )),
-                      cursorColor: Colors.amber,
-                      cursorHeight: 15.0,
-                      cursorWidth: 1.0,
-                    ),
-                    const SizedBox(
-                      height: 60.0,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            isClicked = !isClicked;
-                          });
+                        )),
+                    cursorColor: Colors.amber,
+                    cursorHeight: 15.0,
+                    cursorWidth: 1.0,
+                  ),
+                  const SizedBox(
+                    height: 60.0,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/second');
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isClicked? Colors.lightGreenAccent : Colors.lightGreen
-                        ),
-                        child: const Text(
-                          "Se connecter",
-                          style: TextStyle(color: Colors.black, fontSize: 15),
-                        ))
-              ])))
-            ),
-          );
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: isClicked
+                              ? Colors.lightGreenAccent
+                              : Colors.lightGreen),
+                      child: const Text(
+                        "Se connecter",
+                        style: TextStyle(color: Colors.black, fontSize: 15),
+                      )),
+                ])))),
+        );
   }
 }
