@@ -1,15 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-void main() {
-  var transf = getLivraison("30/09/2014");
-  transf.then((livraison) {
-    for (var livr in livraison) {
-      print(livr["boucle"]["1"]);
-    }
-  });
-}
-
 // GET methods session
 
 Future<Iterable> getTransfert(String date) async {
@@ -41,7 +32,7 @@ Future<Iterable> getLivraison(String date) async {
 Future<bool> isUser(String _n_9032, String _n_9064) async {
   var CODE = "JK9X80L4RT";
   var url = Uri.parse(
-      "http://localhost:5000/api/list?code=$CODE&_n_9032=$_n_9032&_n_9064=$_n_9064");
+      "http://192.168.43.81:5000/api/list?code=$CODE&_n_9032=$_n_9032&_n_9064=$_n_9064");
   http.Response response = await http.get(url);
   if (response.statusCode == 200) {
     return true;

@@ -40,13 +40,34 @@ class _LoginPageState extends State<LoginPage> {
 
   String pssw = "";
 
-  bool passwordVisible = true;
+  bool passwordVisible = false;
 
-  bool isClicked = false;
+  bool isLoading = false;
+  String errormssg = "";
 
   final _uname = TextEditingController();
 
   final _pssw = TextEditingController();
+
+  void authenticate() async{
+    setState(() {
+      isLoading = true;
+      errormssg = "";
+    });
+    bool isValidUser = await isUser(_uname.text, _pssw.text);
+    setState(() {
+      isLoading = false;
+    });
+
+    if (isValidUser) {
+      Navigator.pushNamed(context, '/second');
+    }
+    else {
+      setState(() {
+        errormssg = "Utilisateur non existant !";
+      });
+    }
+    }
 
   @override
   Widget build(BuildContext context){
@@ -72,6 +93,8 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 70.0,
                   ),
+                      Text("$errormssg", style: TextStyle(color: Colors.red),),
+                  SizedBox(height: 20,),
                   TextField(
                     style: TextStyle(color: Colors.grey[300]),
                     controller: _uname,
@@ -106,18 +129,10 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(
                     height: 60.0,
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/second');
-                        },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: isClicked
-                              ? Colors.lightGreenAccent
-                              : Colors.lightGreen),
-                      child: const Text(
-                        "Se connecter",
-                        style: TextStyle(color: Colors.black, fontSize: 15),
-                      )),
+                      isLoading ? CircularProgressIndicator()
+                          : ElevatedButton(onPressed: authenticate, child: Text("Se connecter", style: TextStyle(color: Colors.black),),
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),),
+
                 ])))),
         );
   }
