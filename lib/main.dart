@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:Soft/rest.dart';
-import 'package:Soft/screen2.dart';
+import 'package:soft/rest.dart';
+import 'package:soft/screen2.dart';
 
 void main() => runApp(const Login());
 
@@ -83,18 +83,18 @@ class _LoginPageState extends State<LoginPage> {
                 child: SingleChildScrollView(
                     child: Column(children: [
                   SizedBox(
-                    height: 70.0,
+                    height: 40.0,
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.asset("assets/drawer.png",
+                    child: Image.asset("assets/icon/drawer2.png",
                         fit: BoxFit.cover, width: 200, height: 200),
                   ),
                   SizedBox(
-                    height: 70.0,
+                    height: 25.0,
                   ),
                       Text("$errormssg", style: TextStyle(color: Colors.red),),
-                  SizedBox(height: 20,),
+                  SizedBox(height: 25,),
                   TextField(
                     style: TextStyle(color: Colors.grey[300]),
                     controller: _uname,

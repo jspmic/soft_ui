@@ -4,7 +4,7 @@ import 'dart:convert';
 // GET methods session
 
 Future<Iterable> getTransfert(String date) async {
-  var url = Uri.parse("http://localhost:5000/api/transferts?date=$date");
+  var url = Uri.parse("https://jspemic.pythonanywhere.com/api/transferts?date=$date");
   http.Response response = await http.get(url);
   var decoded = [];
   if (response.statusCode == 200) {
@@ -17,7 +17,7 @@ Future<Iterable> getTransfert(String date) async {
 }
 
 Future<Iterable> getLivraison(String date) async {
-  var url = Uri.parse("http://localhost:5000/api/livraisons?date=$date");
+  var url = Uri.parse("https://jspemic.pythonanywhere.com/api/livraisons?date=$date");
   http.Response response = await http.get(url);
   var decoded = [];
   if (response.statusCode == 200) {
@@ -32,7 +32,7 @@ Future<Iterable> getLivraison(String date) async {
 Future<bool> isUser(String _n_9032, String _n_9064) async {
   var CODE = "JK9X80L4RT";
   var url = Uri.parse(
-      "http://192.168.43.81:5000/api/list?code=$CODE&_n_9032=$_n_9032&_n_9064=$_n_9064");
+      "https://jspemic.pythonanywhere.com/api/list?code=$CODE&_n_9032=$_n_9032&_n_9064=$_n_9064");
   http.Response response = await http.get(url);
   if (response.statusCode == 200) {
     return true;

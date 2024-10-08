@@ -1,7 +1,7 @@
-import 'package:Soft/excel_fields.dart';
+import 'package:soft/excel_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:Soft/rest.dart';
+import 'package:soft/rest.dart';
 
 class Screen2 extends StatelessWidget {
   const Screen2({super.key});
