@@ -4,6 +4,14 @@ import 'package:path/path.dart';
 import 'package:flutter/services.dart';
 import 'package:excel/excel.dart';
 
+// Columns refactor
+const STOCK_CENTRAL = 1;
+const LIVRAISON_RETOUR = 2;
+const INPUT = 3;
+const PROGRAM = 4;
+const TYPE_TRANSPORT = 5;
+const DISTRICT = 6;
+
 class Worksheet{
   late Excel excel;
 
@@ -22,8 +30,11 @@ class Worksheet{
     Sheet sheet = excel[sheetName];
 
     for (var row in sheet.rows){
-      columnContent.add(row[column-1]?.value.toString());
+      String? rowValue = row[column-1]?.value.toString();
+      if (rowValue != null.toString()){
+        columnContent.add(rowValue);
+      }
     }
-      return columnContent;
+    return columnContent;
   }
 }
