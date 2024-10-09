@@ -3,22 +3,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:soft/rest.dart';
 
-class Screen2 extends StatelessWidget {
+late Color? background;
+class ScreenTransition{
+  late Color? backgroundColor;
+  ScreenTransition({required this.backgroundColor}){
+    background = backgroundColor;
+  }
+}
+
+class Screen2 extends StatefulWidget {
   const Screen2({super.key});
 
   @override
+  State<Screen2> createState() => _Screen2State();
+}
+
+class _Screen2State extends State<Screen2> {
+
+  @override
   Widget build(BuildContext context) {
+    Color? textColor = (background == Colors.white ? Colors.black : Colors.white);
+    print(textColor==Colors.black);
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: const ColorScheme.dark(primary: Colors.lightGreen),
+        colorScheme: background == Colors.white ? const ColorScheme.light(primary: Colors.lightGreen)
+            : const ColorScheme.dark(primary: Colors.lightGreen),
         datePickerTheme: DatePickerThemeData(
-          backgroundColor: Colors.grey[900],
+          backgroundColor: background,
           dividerColor: Colors.lightGreen,
         )
       ),
       title: "Program",
       home: Scaffold(
-        backgroundColor: Colors.grey[900],
+        backgroundColor: background,
         appBar: AppBar(title: Text("Program", style: TextStyle(color: Colors.black),),
           centerTitle: true,
           backgroundColor: Colors.lightGreen,
@@ -37,19 +54,20 @@ class Screen2 extends StatelessWidget {
                           Column(
                             children: [
                               TextField(
-                                style: TextStyle(color: Colors.white, fontSize: 15),
+                                style: TextStyle(color: textColor, fontSize: 15),
                                 decoration: InputDecoration(
                                   hintText: "Nom du Logistic official...",
                                 ),
                               ),
                               TextField(
-                                style: TextStyle(color: Colors.white, fontSize: 15),
+                                style: TextStyle(color: textColor, fontSize: 15),
                                 decoration: InputDecoration(
+
                                   hintText: "Plaque...",
                                 ),
                               ),
                               TextField(
-                                style: TextStyle(color: Colors.white, fontSize: 15),
+                                style: TextStyle(fontSize: 15),
                                 decoration: InputDecoration(
                                   hintText: "Numero du mouvement...",
                                 ),
@@ -106,7 +124,7 @@ class _DatePickerState extends State<DatePicker> {
             ),
           ),
           const SizedBox(height: 20,),
-          Text("Date: ${_date != null ? _date : "Aucune date"}",
+          Text("Date: ${_date ?? "Aucune date"}",
           style: TextStyle(fontSize: 18, color: Colors.white))
         ],
       ),
