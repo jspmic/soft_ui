@@ -3,11 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:soft/rest.dart';
 
+Future<Iterable<String?>> list(int column) async{
+  Worksheet workSheet = await Worksheet.fromAsset("assets/worksheet.xlsx");
+  return workSheet.readColumn("Feuille 1", column);
+}
+
 late Color? background;
 class ScreenTransition{
   late Color? backgroundColor;
   ScreenTransition({required this.backgroundColor}){
     background = backgroundColor;
+
   }
 }
 
@@ -23,7 +29,6 @@ class _Screen2State extends State<Screen2> {
   @override
   Widget build(BuildContext context) {
     Color? textColor = (background == Colors.white ? Colors.black : Colors.white);
-    print(textColor==Colors.black);
     return MaterialApp(
       theme: ThemeData(
         colorScheme: background == Colors.white ? const ColorScheme.light(primary: Colors.lightGreen)
@@ -72,6 +77,8 @@ class _Screen2State extends State<Screen2> {
                                   hintText: "Numero du mouvement...",
                                 ),
                               ),
+                              Stock(hintText: "Stock Central Depart", column: STOCK_CENTRAL,),
+                              Stock(hintText: "Input", column: INPUT,),
                             ],
                           )
                       ),
@@ -87,7 +94,7 @@ class _Screen2State extends State<Screen2> {
                             child: Text("Transfert", style: TextStyle(color: Colors.black)),
                           ),
                         ],
-                      )
+                      ),
                     ]),
             )
       ),
@@ -129,5 +136,50 @@ class _DatePickerState extends State<DatePicker> {
         ],
       ),
     );
+  }
+}
+
+class Stock extends StatefulWidget {
+  final String hintText;
+  final int column;
+  const Stock({super.key, required this.hintText, required this.column});
+
+  @override
+  State<Stock> createState() => _StockState();
+}
+
+class _StockState extends State<Stock> {
+  String _hintCopy = "Default";
+
+  @override
+  void initState(){
+    _hintCopy = widget.hintText;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Iterable<String?>>(future: list(widget.column), builder: (context, snapshot){
+      if (snapshot.connectionState == ConnectionState.waiting){
+        return CircularProgressIndicator();
+      }
+      else if (snapshot.hasError){
+        return Text("Error: ${snapshot.error}");
+      }
+      else{
+        final choices = snapshot.data!;
+        return DropdownButton<String>(items: choices.map((choice) {
+          return DropdownMenuItem<String>(value: choice, child: Text(choice.toString()));
+        }).toList(),
+            onChanged: (value){
+          setState(() {
+            _hintCopy = value!;
+          });
+        }, hint: Text(_hintCopy, style: TextStyle(color: background == Colors.white ? Colors.black
+                : Colors.white)),
+            style: TextStyle(color: background == Colors.white ?  Colors.black
+                : Colors.white));
+      }
+    });
   }
 }
