@@ -1,12 +1,8 @@
 import 'package:soft/excel_fields.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:soft/rest.dart';
+import 'package:soft/custom_widgets.dart';
+//import 'package:soft/rest.dart';
 
-Future<Iterable<String?>> list(int column) async{
-  Worksheet workSheet = await Worksheet.fromAsset("assets/worksheet.xlsx");
-  return workSheet.readColumn("Feuille 1", column);
-}
 
 late Color? background;
 class ScreenTransition{
@@ -77,15 +73,15 @@ class _Screen2State extends State<Screen2> {
                                   hintText: "Numero du mouvement...",
                                 ),
                               ),
-                              Stock(hintText: "Stock Central Depart", column: STOCK_CENTRAL,),
-                              Stock(hintText: "Input", column: INPUT,),
+                              Stock(hintText: "Stock Central Depart", column: STOCK_CENTRAL, background: background,),
                             ],
                           )
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          ElevatedButton(onPressed: (){},
+                          ElevatedButton(onPressed: (){
+                          },
                             style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
                             child: Text("Livraison", style: TextStyle(color: Colors.black)),
                           ),
@@ -99,87 +95,5 @@ class _Screen2State extends State<Screen2> {
             )
       ),
     );
-  }
-}
-
-class DatePicker extends StatefulWidget {
-  const DatePicker({super.key});
-
-  @override
-  State<DatePicker> createState() => _DatePickerState();
-}
-
-class _DatePickerState extends State<DatePicker> {
-  DateTime? _date;
-  Future _selectDate(BuildContext context) async => showDatePicker(context: context,
-      firstDate: DateTime(1920), lastDate: DateTime(3050), initialDate: DateTime.now()
-  ).then((DateTime? selected) {
-    if (selected != null && selected != _date) {
-      setState(() => _date = selected);
-    }
-    });
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(onPressed: () => _selectDate(context),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
-            child: const Text("Selectionnez une date",
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-          const SizedBox(height: 20,),
-          Text("Date: ${_date ?? "Aucune date"}",
-          style: TextStyle(fontSize: 18, color: Colors.white))
-        ],
-      ),
-    );
-  }
-}
-
-class Stock extends StatefulWidget {
-  final String hintText;
-  final int column;
-  const Stock({super.key, required this.hintText, required this.column});
-
-  @override
-  State<Stock> createState() => _StockState();
-}
-
-class _StockState extends State<Stock> {
-  String _hintCopy = "Default";
-
-  @override
-  void initState(){
-    _hintCopy = widget.hintText;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<Iterable<String?>>(future: list(widget.column), builder: (context, snapshot){
-      if (snapshot.connectionState == ConnectionState.waiting){
-        return CircularProgressIndicator();
-      }
-      else if (snapshot.hasError){
-        return Text("Error: ${snapshot.error}");
-      }
-      else{
-        final choices = snapshot.data!;
-        return DropdownButton<String>(items: choices.map((choice) {
-          return DropdownMenuItem<String>(value: choice, child: Text(choice.toString()));
-        }).toList(),
-            onChanged: (value){
-          setState(() {
-            _hintCopy = value!;
-          });
-        }, hint: Text(_hintCopy, style: TextStyle(color: background == Colors.white ? Colors.black
-                : Colors.white)),
-            style: TextStyle(color: background == Colors.white ?  Colors.black
-                : Colors.white));
-      }
-    });
   }
 }
