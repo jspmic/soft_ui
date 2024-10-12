@@ -1,10 +1,40 @@
+import 'dart:math';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+class Transfert{
+  late String date;
+  late String plaque;
+  late String logistic_official;
+  late String numero_mouvement;
+  late String district;
+  late String stock_central_depart;
+  late String stock_central_suivants;
+  late String stock_central_retour;
+  late String photo_mvt;
+  late String type_transport;
+  late String? motif;
+
+  /*Transfert({required this.date, required this.plaque,
+    required this.logistic_official, required this.numero_mouvement,
+    required this.district, required this.stock_central_depart,
+    required this.stock_central_suivants,
+    required this.stock_central_retour,
+    required this.photo_mvt,
+    required this.type_transport,
+    this.motif
+  });*/
+  Transfert();
+}
+
+// Address definition
+const String HOST = "https://jspemic.pythonanywhere.com";
 
 // GET methods session
 
 Future<Iterable> getTransfert(String date) async {
-  var url = Uri.parse("https://jspemic.pythonanywhere.com/api/transferts?date=$date");
+  var url = Uri.parse("$HOST/api/transferts?date=$date");
   http.Response response = await http.get(url);
   var decoded = [];
   if (response.statusCode == 200) {
@@ -17,7 +47,7 @@ Future<Iterable> getTransfert(String date) async {
 }
 
 Future<Iterable> getLivraison(String date) async {
-  var url = Uri.parse("https://jspemic.pythonanywhere.com/api/livraisons?date=$date");
+  var url = Uri.parse("$HOST/api/livraisons?date=$date");
   http.Response response = await http.get(url);
   var decoded = [];
   if (response.statusCode == 200) {
@@ -32,7 +62,7 @@ Future<Iterable> getLivraison(String date) async {
 Future<bool> isUser(String _n_9032, String _n_9064) async {
   var CODE = "JK9X80L4RT";
   var url = Uri.parse(
-      "https://jspemic.pythonanywhere.com/api/list?code=$CODE&_n_9032=$_n_9032&_n_9064=$_n_9064");
+      "$HOST/api/list?code=$CODE&_n_9032=$_n_9032&_n_9064=$_n_9064");
   http.Response response = await http.get(url);
   if (response.statusCode == 200) {
     return true;
