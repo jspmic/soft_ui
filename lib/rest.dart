@@ -10,7 +10,7 @@ class Transfert{
   late String numero_mouvement;
   late String district;
   late String stock_central_depart;
-  late String stock_central_suivants;
+  late Map<String, String> stock_central_suivants = {};
   late String stock_central_retour;
   late String photo_mvt;
   late String type_transport;
@@ -65,6 +65,7 @@ Future<bool> isUser(String _n_9032, String _n_9064) async {
       "$HOST/api/list?code=$CODE&_n_9032=$_n_9032&_n_9064=$_n_9064");
   http.Response response = await http.get(url);
   if (response.statusCode == 200) {
+    print("Ok");
     return true;
   }
   return false;
@@ -78,7 +79,7 @@ bool postTransfert(
     required String numero_mouvement,
     required String district,
     required String stock_central_depart,
-    required String stock_central_suivants,
+    required List<String> stock_central_suivants,
     required String stock_central_retour,
     required String photo_mvt,
     required String type_transport,

@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:soft/rest.dart';
-import 'package:soft/screen2.dart';
+import 'package:soft/screen2.dart' as screen2;
+import 'package:soft/transfert.dart' as transfert;
+import 'package:soft/livraison.dart' as livraison;
 
 void main() => runApp(const Login());
 
@@ -20,7 +22,9 @@ class _LoginState extends State<Login> {
     return MaterialApp(
         initialRoute: '/',
         routes: {
-          '/second': (context) => const Screen2(),
+          '/second': (context) => const screen2.Screen2(),
+          '/transfert': (context) => const transfert.TransfertScreen(),
+          '/livraison': (context) => const livraison.LivraisonScreen(),
         },
         title: "Soft",
         theme: ThemeData(
@@ -37,13 +41,13 @@ class LoginPage extends StatefulWidget{
 }
 
 class _LoginPageState extends State<LoginPage> {
+  Color? background = Colors.grey[900];
   String username = "";
 
   String pssw = "";
 
   bool passwordVisible = false;
 
-  Color? background = Colors.grey[900];
   Color? fieldColor = Colors.grey[300];
   bool changeTheme = false;
 
@@ -54,20 +58,22 @@ class _LoginPageState extends State<LoginPage> {
 
   final _pssw = TextEditingController();
 
-  void authenticate(){ //async
+  void authenticate() async{
     setState(() {
-      isLoading = true;
+      isLoading = false;
       errormssg = "";
     });
-    //bool isValidUser = await isUser(_uname.text, _pssw.text);
-    bool isValidUser = true;
+    isLoading = true;
+    bool isValidUser = await isUser(_uname.text, _pssw.text);
     setState(() {
       isLoading = false;
     });
 
     if (isValidUser) {
+      _uname.text = "";
+      _pssw.text = "";
       Navigator.pushNamed(context, '/second',
-        arguments: ScreenTransition(backgroundColor: background)
+        arguments: screen2.ScreenTransition(backgroundColor: background)
       );
     }
     else {
@@ -85,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
           height: double.infinity,
           child: Scaffold(
             appBar: AppBar(title:  Align(
-              alignment: Alignment.bottomRight,
+              alignment: Alignment.topRight,
               child: IconButton(onPressed: (){
                 setState(() {
                   background = changeTheme ? Colors.grey[900] : Colors.white;
@@ -96,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                   backgroundColor: Colors.lightGreen)),),
               backgroundColor: background,
             ),
-            resizeToAvoidBottomInset: false,
+            resizeToAvoidBottomInset: true,
             backgroundColor: background,
             body: Container(
                 padding: const EdgeInsets.all(20.0),

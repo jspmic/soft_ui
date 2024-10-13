@@ -1,5 +1,10 @@
 import 'package:soft/excel_fields.dart';
 import 'package:flutter/material.dart';
+import 'package:soft/screen2.dart';
+import 'package:soft/rest.dart';
+import 'package:soft/transfert.dart';
+
+DateTime? dateSelected;
 
 // Function to list all the contents of the specified column in the sheet
 Future<Iterable<String?>> list(int column) async{
@@ -18,10 +23,13 @@ class DatePicker extends StatefulWidget {
 class _DatePickerState extends State<DatePicker> {
   DateTime? _date;
   Future _selectDate(BuildContext context) async => showDatePicker(context: context,
-      firstDate: DateTime(1920), lastDate: DateTime(3050), initialDate: DateTime.now()
+      firstDate: DateTime(2005), lastDate: DateTime(2090), initialDate: DateTime.now()
   ).then((DateTime? selected) {
     if (selected != null && selected != _date) {
-      setState(() => _date = selected);
+      setState(() {
+        _date = selected;
+        dateSelected = _date;
+      });
     }
   });
   @override
@@ -36,9 +44,10 @@ class _DatePickerState extends State<DatePicker> {
               style: TextStyle(color: Colors.black),
             ),
           ),
-          const SizedBox(height: 20,),
+          const SizedBox(height: 10,),
           Text("Date: ${_date ?? "Aucune date"}",
-              style: TextStyle(fontSize: 18, color: Colors.white))
+              style: TextStyle(fontSize: 18, color: background == Colors.white ? Colors.black
+              : Colors.white))
         ],
       ),
     );
@@ -50,7 +59,9 @@ class Stock extends StatefulWidget {
   final String hintText;
   final int column;
   final Color? background;
-  const Stock({super.key, required this.hintText, required this.column, required this.background});
+  final Function(String) onSelect;
+  const Stock({super.key, required this.hintText, required this.column, required this.background,
+  required this.onSelect});
 
   @override
   State<Stock> createState() => _StockState();
@@ -82,7 +93,9 @@ class _StockState extends State<Stock> {
         }).toList(),
             onChanged: (value){
               setState(() {
+                // Get the selected value
                 _hintCopy = value!;
+                widget.onSelect(value);
               });
             }, hint: Text(_hintCopy, style: TextStyle(color: widget.background == Colors.white ? Colors.black
                 : Colors.white)),
@@ -90,5 +103,105 @@ class _StockState extends State<Stock> {
                 : Colors.white)));
       }
     });
+  }
+}
+
+class stockCentralSuivant extends StatefulWidget {
+  const stockCentralSuivant({super.key});
+
+  @override
+  State<stockCentralSuivant> createState() => _stockCentralSuivantState();
+}
+
+class _stockCentralSuivantState extends State<stockCentralSuivant> {
+  List<Widget> _stockWidgets = [];
+
+  void newStock(){
+    _stockWidgets.add(Stock(hintText: "Stock Central Suivant",
+      column: STOCK_CENTRAL,
+      background: background,
+      onSelect: (value){
+      if (!objTransfert.stock_central_suivants.keys.contains(value)) {
+        objTransfert.stock_central_suivants[value] = value;
+      }
+      },
+    ));
+  }
+  @override
+  void initState(){
+    newStock();
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ..._stockWidgets,
+          ElevatedButton(onPressed: (){
+            setState(() {
+              newStock();
+              print(objTransfert.stock_central_suivants);
+            });
+          }, style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
+              child: Icon(Icons.add, color: Colors.black)),
+        ]),
+      );
+  }
+}
+
+class Boucle extends StatefulWidget {
+  const Boucle({super.key});
+
+  @override
+  State<Boucle> createState() => _BoucleState();
+}
+
+class _BoucleState extends State<Boucle> {
+  List<Widget> _boucle = [];
+
+  void create_boucle(){
+    _boucle.add(Stock(hintText: "Input",
+        column: INPUT,
+        background: background,
+      onSelect: (value){}
+    )
+    );
+    _boucle.add(TextField(
+      style: TextStyle(fontSize: 15),
+      decoration: InputDecoration(
+        hintText: "Quantité...",
+      ),
+    ));
+  }
+  @override
+  void initState(){
+    create_boucle();
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(20),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ..._boucle,
+            SizedBox(height: 10,),
+            ElevatedButton(onPressed: (){
+              setState(() {
+                create_boucle();
+              });
+            },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
+                child: Icon(Icons.add, color: Colors.black)),
+          ]),
+    );
   }
 }
