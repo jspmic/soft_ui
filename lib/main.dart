@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:soft/custom_widgets.dart';
 import 'package:soft/rest.dart';
 import 'package:soft/screen2.dart' as screen2;
 import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
+import 'package:soft/final_page.dart' as final_page;
 
 void main() => runApp(const Login());
 
@@ -25,6 +27,7 @@ class _LoginState extends State<Login> {
           '/second': (context) => const screen2.Screen2(),
           '/transfert': (context) => const transfert.TransfertScreen(),
           '/livraison': (context) => const livraison.LivraisonScreen(),
+          '/final': (context) => const final_page.Final(),
         },
         title: "Soft",
         theme: ThemeData(
@@ -58,13 +61,14 @@ class _LoginPageState extends State<LoginPage> {
 
   final _pssw = TextEditingController();
 
-  void authenticate() async{
+  void authenticate(){// async{
     setState(() {
       isLoading = false;
       errormssg = "";
     });
     isLoading = true;
-    bool isValidUser = await isUser(_uname.text, _pssw.text);
+    //bool isValidUser = await isUser(_uname.text, _pssw.text);
+    bool isValidUser = true;
     setState(() {
       isLoading = false;
     });
@@ -73,7 +77,9 @@ class _LoginPageState extends State<LoginPage> {
       _uname.text = "";
       _pssw.text = "";
       Navigator.pushNamed(context, '/second',
-        arguments: screen2.ScreenTransition(backgroundColor: background)
+        arguments: screen2.ScreenTransition(backgroundColor: background, FieldColor: fieldColor,
+          changeThemes: changeTheme
+        )
       );
     }
     else {
@@ -82,6 +88,11 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
     }
+    @override
+  void initState() {
+    initialize();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context){
