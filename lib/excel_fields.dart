@@ -37,4 +37,19 @@ class Worksheet{
     }
     return columnContent;
   }
+
+  List<String?> readColline(String sheetName, String? district){
+    Sheet sheet = excel[sheetName];
+    int max_row = sheet.maxRows;
+    int currentRow = DISTRICT+1;
+    List<String?> currentRowContent = [];
+    for (var col in Iterable.generate(max_row-DISTRICT)){
+      currentRowContent = readColumn(sheetName, currentRow);
+      if (currentRowContent[0] == district){
+        break;
+      }
+      currentRow += 1;
+    }
+    return currentRowContent;
+  }
 }
