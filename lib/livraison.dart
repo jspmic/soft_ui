@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:soft/rest.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:soft/excel_fields.dart';
+import 'package:soft/final_page.dart' as final_page;
 
 late Color? background;
+late Color? fieldcolor;
+Livraison objLivraison = Livraison();
+
 class ScreenTransition{
   late Color? backgroundColor;
-  ScreenTransition({required this.backgroundColor}){
+  late Color? fieldColor;
+  late Livraison objlivraison;
+  ScreenTransition({required this.backgroundColor, required this.fieldColor,
+  required this.objlivraison}){
     background = backgroundColor;
+    fieldcolor = fieldColor;
+    objLivraison = objlivraison;
   }
 }
 
@@ -16,12 +24,12 @@ class LivraisonScreen extends StatefulWidget {
   const LivraisonScreen({super.key});
 
   @override
-  State<LivraisonScreen> createState() => _TransfertScreenState();
+  State<LivraisonScreen> createState() => _LivraisonScreenState();
 }
 
-class _TransfertScreenState extends State<LivraisonScreen> {
+class _LivraisonScreenState extends State<LivraisonScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return MaterialApp(
       theme: ThemeData(
           colorScheme: background == Colors.white ? const ColorScheme.light(primary: Colors.lightGreen)
@@ -35,12 +43,23 @@ class _TransfertScreenState extends State<LivraisonScreen> {
         ),
         body: SingleChildScrollView(child: Column(
           children: [
-          Stock(hintText: "District", column: DISTRICT, background: background,
-          onSelect: (value){}),
-            Boucle(),
-            ElevatedButton(onPressed: (){},
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
-                child: Text("Suivant", style: TextStyle(color: Colors.black)))
+            Boucle(district: objLivraison.district),
+              ElevatedButton(onPressed: (){},
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
+              child: IconButton(onPressed: (){
+                Navigator.pushNamed(context, "/final",
+                  arguments: final_page.ScreenTransition(backgroundColor: background, fieldcolor: fieldcolor,
+                    objectLivraison: objLivraison
+                  )
+                );
+              }, icon: Icon(Icons.navigate_next_sharp, color
+            : Colors.black,))),
+            SizedBox(height: 20,),
+            Text("Date: ${objLivraison.date}"),
+            Text("Plaque: ${objLivraison.plaque}"),
+            Text("Logistic Official: ${objLivraison.logistic_official}"),
+            Text("District: ${objLivraison.district}"),
+            Text("Stock Central Depart: ${objLivraison.stock_central_depart}"),
           ],
         )),
       ),
