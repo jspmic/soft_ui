@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:soft/rest.dart';
 import 'package:soft/custom_widgets.dart';
+import 'package:soft/final_page.dart' as final_page;
 
 late Color? Background;
+late Color? fieldColor;
 late Transfert objTransfert;
+
 class ScreenTransition{
   late Color? backgroundColor;
+  late Color? fieldcolor;
   late Transfert objtransf;
-  ScreenTransition({required this.backgroundColor, required this.objtransf}){
+  ScreenTransition({required this.backgroundColor,
+    required this.fieldcolor, required this.objtransf}){
     Background = backgroundColor;
+    fieldColor = fieldcolor;
     objTransfert = objtransf;
   }
 }
@@ -34,17 +40,24 @@ class _TransfertScreenState extends State<TransfertScreen> {
           centerTitle: true,
           backgroundColor: Colors.lightGreen,
         ),
-        body: SingleChildScrollView(child: Column(
-          children: [
-            stockCentralSuivant(),
-            ElevatedButton(onPressed: (){},
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
-                child: Text("Suivant", style: TextStyle(color: Colors.black))),
-            Text(objTransfert.date),
-            Text(objTransfert.plaque),
-            Text(objTransfert.logistic_official),
-            Text(objTransfert.stock_central_depart),
-          ],
+        body: SingleChildScrollView(child: Center(
+          child: Column(
+            children: [
+              stockCentralSuivant(),
+              ElevatedButton(onPressed: (){
+                Navigator.pushNamed(context, '/final',
+                  arguments: final_page.ScreenTransition(backgroundColor: Background,
+                      fieldcolor: fieldColor)
+                );
+              },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
+                  child: Text("Suivant", style: TextStyle(color: Colors.black))),
+              Text("Date: ${objTransfert.date}"),
+              Text("Plaque: ${objTransfert.plaque}"),
+              Text("Logistic Official: ${objTransfert.logistic_official}"),
+              Text("Stock Central Depart: ${objTransfert.stock_central_depart}"),
+            ],
+          ),
         )),
       ),
     );
