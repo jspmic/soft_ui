@@ -10,22 +10,27 @@ class Transfert{
   late String numero_mouvement;
   late String district;
   late String stock_central_depart;
-  late Map<String, String> stock_central_suivants = {};
+  late List<String?> stock_central_suivants = [];
   late String stock_central_retour;
   late String photo_mvt;
   late String type_transport;
   late String? motif;
-
-  /*Transfert({required this.date, required this.plaque,
-    required this.logistic_official, required this.numero_mouvement,
-    required this.district, required this.stock_central_depart,
-    required this.stock_central_suivants,
-    required this.stock_central_retour,
-    required this.photo_mvt,
-    required this.type_transport,
-    this.motif
-  });*/
   Transfert();
+}
+
+class Livraison{
+  late String date;
+  late String plaque;
+  late String logistic_official;
+  late String numero_mouvement;
+  late String district;
+  late String stock_central_depart;
+  late Map<String, String> boucle = {};
+  late String stock_central_retour;
+  late String photo_mvt;
+  late String type_transport;
+  late String? motif;
+  Livraison();
 }
 
 // Address definition
