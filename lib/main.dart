@@ -44,6 +44,8 @@ class _LoginState extends State<Login> {
   }
 }
 class LoginPage extends StatefulWidget{
+  const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -137,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 25.0,
                   ),
-                      Text("$errormssg", style: TextStyle(color: Colors.red),),
+                      Text(errormssg, style: TextStyle(color: Colors.red),),
                   SizedBox(height: 25,),
                   TextField(
                     style: TextStyle(color: fieldColor),
