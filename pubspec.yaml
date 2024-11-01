@@ -94,7 +94,7 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 flutter_launcher_icons:
-  android: true
+  android: "soft"
   ios: true
   min_sdk_android: 29
   image_path: "assets/icon/drawer2.png"
