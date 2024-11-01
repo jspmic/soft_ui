@@ -77,7 +77,7 @@ class Livraison{
           'logistic_official': logistic_official,
           'numero_mouvement': numero_mouvement,
           'stock_central_depart': stock_central_depart,
-          'boucle': jsonEncode(jsonEncode(boucle)),
+          'boucle': jsonEncode(boucle),
           'stock_central_retour': stock_central_retour,
           'photo_mvt': photo_mvt,
           'type_transport': type_transport,
