@@ -21,7 +21,6 @@ class ScreenTransition{
 
 class TransfertScreen extends StatefulWidget {
   const TransfertScreen({super.key});
-
   @override
   State<TransfertScreen> createState() => _TransfertScreenState();
 }
@@ -45,9 +44,10 @@ class _TransfertScreenState extends State<TransfertScreen> {
             children: [
               stockCentralSuivant(),
               ElevatedButton(onPressed: (){
+                print(objTransfert.stock_central_suivants);
                 Navigator.pushNamed(context, '/final',
                   arguments: final_page.ScreenTransition(backgroundColor: Background,
-                      fieldcolor: fieldColor)
+                      fieldcolor: fieldColor, objectTransfert: objTransfert)
                 );
               },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
@@ -56,6 +56,7 @@ class _TransfertScreenState extends State<TransfertScreen> {
               Text("Plaque: ${objTransfert.plaque}"),
               Text("Logistic Official: ${objTransfert.logistic_official}"),
               Text("Stock Central Depart: ${objTransfert.stock_central_depart}"),
+              Text("Utilisateur: ${objTransfert.user}"),
             ],
           ),
         )),

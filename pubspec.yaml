@@ -33,6 +33,7 @@ dependencies:
   excel: any
   http: any
   auto_route: any
+  image_picker: any
 
 
   # The following adds the Cupertino Icons font to your application.
