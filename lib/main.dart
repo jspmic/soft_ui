@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
       isLoading = false;
     });
 
-    if (isValidUser) {
+    if (mounted && isValidUser) {
       objTransfert.user = _uname.text;
       objLivraison.user = _uname.text;
       _uname.text = "";
@@ -103,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context){
       return
-        Container(
+        SizedBox(
           width: double.infinity,
           height: double.infinity,
           child: Scaffold(
