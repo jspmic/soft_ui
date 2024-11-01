@@ -1,14 +1,19 @@
 import 'package:soft/excel_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:soft/screen2.dart';
-import 'package:soft/rest.dart';
-import 'package:soft/transfert.dart';
+import 'package:soft/transfert.dart' as transfert;
+import 'package:soft/livraison.dart' as livraison;
 
 Map<int, Iterable<String?>> cache = {};
 Map<String?, Iterable<String?>> cache2 = {};
 
 DateTime? dateSelected;
 bool collineDisponible = false;
+
+// Function to capitalize a string
+String capitalize(String string){
+  return string[0].toUpperCase() + string.substring(1, string.length);
+}
 
 // Function to list all the contents of the specified column in the sheet
 void list(int column, {String? district}) async{
@@ -31,8 +36,10 @@ void initialize({String? district}){
   }
   list(STOCK_CENTRAL);
   list(TYPE_TRANSPORT);
+  list(PROGRAM);
   list(INPUT);
   list(DISTRICT);
+  list(LIVRAISON_RETOUR);
 }
 
 // Custom DatePicker widget
@@ -58,17 +65,15 @@ class _DatePickerState extends State<DatePicker> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          ElevatedButton(onPressed: () => _selectDate(context),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
-            child: const Text("Selectionnez une date",
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-          const SizedBox(height: 10,),
-          Text("Date: ${_date == null ? "Aucune date" : "${_date?.day}/${_date?.month}/${_date?.year}"}",
+          OutlinedButton(onPressed: () => _selectDate(context),
+            style: ElevatedButton.styleFrom(backgroundColor: background),
+            child: Text("Date",
+                style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
+              )),
+          _date == null ? Icon(Icons.date_range, color: background == Colors.white ? Colors.black : Colors.white) : Text("${_date?.day}/${_date?.month}/${_date?.year}",
               style: TextStyle(fontSize: 18, color: background == Colors.white ? Colors.black
               : Colors.white))
         ],
@@ -122,31 +127,6 @@ class _StockState extends State<Stock> {
     style: TextStyle(color: widget.background == Colors.white ?  Colors.black
         : Colors.white)
     ));
-    /*return FutureBuilder<Iterable<String?>>(future: list(widget.column), builder: (context, snapshot){
-      if (snapshot.connectionState == ConnectionState.waiting){
-        return CircularProgressIndicator();
-      }
-      else if (snapshot.hasError){
-        return Text("Error: ${snapshot.error}");
-      }
-      else{
-        final choices = snapshot.data!;
-        return SingleChildScrollView(scrollDirection: Axis.horizontal,
-            child: DropdownButton<String>(items: choices.map((choice) {
-          return DropdownMenuItem<String>(value: choice, child: Text(choice.toString()));
-        }).toList(),
-            onChanged: (value){
-              setState(() {
-                // Get the selected value
-                _hintCopy = value!;
-                widget.onSelect(value);
-              });
-            }, hint: Text(_hintCopy, style: TextStyle(color: widget.background == Colors.white ? Colors.black
-                : Colors.white)),
-            style: TextStyle(color: widget.background == Colors.white ?  Colors.black
-                : Colors.white)));
-      }
-    });*/
   }
 }
 
@@ -161,18 +141,19 @@ class _stockCentralSuivantState extends State<stockCentralSuivant> {
   List<Widget> _stockWidgets = [];
   int index = 0;
 
-  void newStock(){
+  void newStock(int counter){
     _stockWidgets.add(Stock(hintText: "Stock Central Suivant",
       column: STOCK_CENTRAL,
-      background: background,
+      background: transfert.Background,
       onSelect: (value){
-      objTransfert.stock_central_suivants.add(value);
+      transfert.objTransfert.stock_central_suivants[counter.toString()] = value;
       },
     ));
   }
   @override
   void initState(){
-    newStock();
+    newStock(index);
+    index += 1;
     super.initState();
   }
   @override
@@ -187,8 +168,9 @@ class _stockCentralSuivantState extends State<stockCentralSuivant> {
           ..._stockWidgets,
           ElevatedButton(onPressed: (){
             setState(() {
-              newStock();
-              print(objTransfert.stock_central_suivants);
+              newStock(index);
+              index += 1;
+              print(transfert.objTransfert.stock_central_suivants);
             });
           }, style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
               child: Icon(Icons.add, color: Colors.black)),
@@ -196,6 +178,9 @@ class _stockCentralSuivantState extends State<stockCentralSuivant> {
       );
   }
 }
+
+Map<String, String> oneBoucle = {};
+int count=1;
 
 class Boucle extends StatefulWidget {
   final String district;
@@ -207,19 +192,39 @@ class Boucle extends StatefulWidget {
 
 class _BoucleState extends State<Boucle> {
   List<Widget> _boucle = [];
+  Map<int, String> quantite = {};
 
-  void create_boucle(){
+  void create_boucle(int count){
+    quantite[count] = "";
+    _boucle.add(Stock(hintText: "Livraison Retour",
+        column: LIVRAISON_RETOUR,
+        background: background,
+        onSelect: (value) {
+      setState(() {
+        oneBoucle["livraison_retour"] = value;
+      });
+        }
+    )
+    );
       _boucle.add(Stock(hintText: "Colline",
           column: DISTRICT+5,
           district: widget.district,
           background: background,
-          onSelect: (value) {}
+          onSelect: (value) {
+            setState(() {
+              oneBoucle["colline"] = value;
+            });
+          }
       )
       );
       _boucle.add(Stock(hintText: "Input",
           column: INPUT,
           background: background,
-          onSelect: (value) {}
+          onSelect: (value) {
+            setState(() {
+              oneBoucle["input"] = value;
+            });
+          }
       )
       );
       _boucle.add(TextField(
@@ -227,11 +232,15 @@ class _BoucleState extends State<Boucle> {
         decoration: InputDecoration(
           hintText: "Quantité...",
         ),
+        onChanged: (value){
+          oneBoucle["quantite"] = value;
+        },
+
       ));
   }
   @override
   void initState(){
-    create_boucle();
+    create_boucle(count);
     super.initState();
   }
   @override
@@ -247,12 +256,48 @@ class _BoucleState extends State<Boucle> {
             SizedBox(height: 10,),
             ElevatedButton(onPressed: (){
               setState(() {
-                create_boucle();
+                livraison.objLivraison.boucle[count.toString()] = oneBoucle;
+                count +=1;
+                create_boucle(count);
               });
             },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
                 child: Icon(Icons.add, color: Colors.black)),
           ]),
+    );
+  }
+}
+
+class CardList extends StatelessWidget {
+  final Map data;
+  final String program;
+  const CardList({super.key, required this.data, required this.program});
+
+  void movementViewer(BuildContext context){
+    showDialog(context: context, builder: (context){
+      return AlertDialog(
+        title: Text(data["date"].toString()),
+        content: program == "Transfert" ?
+        Text("Logistic Official: ${data["logistic_official"]}\n\n${data["stock_central_suivants"].values}\n\nRetour: ${data["stock_central_retour"]}\n\nMotif: ${data["motif"]}"):
+        Text("Logistic Official: ${data["logistic_official"]}\n\nDistrict: ${data["district"]}\n\nRetour: ${data["stock_central_retour"]}\n\nMotif: ${data["motif"]}"),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text("Fermer"))
+        ],
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: background,
+        elevation: 10.0,
+        child: ListTile(
+          trailing: Icon(Icons.navigate_next),
+          title: Text(data["stock_central_depart"].toString()),
+          subtitle: Text("Mouvement: ${data["numero_mouvement"].toString()}"),
+          onTap: () => movementViewer(context),
+        )
     );
   }
 }

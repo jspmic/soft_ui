@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:soft/rest.dart';
 import 'package:soft/custom_widgets.dart';
-import 'package:soft/excel_fields.dart';
 import 'package:soft/final_page.dart' as final_page;
 
 late Color? background;
 late Color? fieldcolor;
-Livraison objLivraison = Livraison();
+late Livraison objLivraison;
 
 class ScreenTransition{
   late Color? backgroundColor;
@@ -47,6 +46,8 @@ class _LivraisonScreenState extends State<LivraisonScreen> {
               ElevatedButton(onPressed: (){},
               style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
               child: IconButton(onPressed: (){
+                objLivraison.boucle[count.toString()] = oneBoucle;
+                print(objLivraison.boucle);
                 Navigator.pushNamed(context, "/final",
                   arguments: final_page.ScreenTransition(backgroundColor: background, fieldcolor: fieldcolor,
                     objectLivraison: objLivraison
@@ -60,6 +61,7 @@ class _LivraisonScreenState extends State<LivraisonScreen> {
             Text("Logistic Official: ${objLivraison.logistic_official}"),
             Text("District: ${objLivraison.district}"),
             Text("Stock Central Depart: ${objLivraison.stock_central_depart}"),
+            Text("Utilisateur: ${objLivraison.user}"),
           ],
         )),
       ),

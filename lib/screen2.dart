@@ -1,26 +1,33 @@
-import 'dart:math';
-
 import 'package:soft/excel_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
+import 'package:soft/movements.dart' as movements;
 import 'package:soft/rest.dart';
 
 
 late Color? background;
 late Color? fieldColor;
 late bool changeTheme;
+late Transfert objTransfert;
+late Livraison objLivraison;
+
 class ScreenTransition{
   late Color? backgroundColor;
   late Color? FieldColor;
   late bool changeThemes;
+  late Transfert objtransfert;
+  late Livraison objlivraison;
   ScreenTransition({required this.backgroundColor, required this.FieldColor,
-    required this.changeThemes
+    required this.changeThemes, required this.objtransfert,
+    required this.objlivraison
   }){
     background = backgroundColor;
     fieldColor = FieldColor;
     changeTheme = changeThemes;
+    objTransfert = objtransfert;
+    objLivraison = objlivraison;
   }
 }
 
@@ -32,8 +39,6 @@ class Screen2 extends StatefulWidget {
 }
 
 class _Screen2State extends State<Screen2> {
-  Transfert objTransfert = Transfert();
-  Livraison objLivraison = Livraison();
   final logistic_official = TextEditingController();
   final plaque = TextEditingController();
   final numero_mvt = TextEditingController();
@@ -68,7 +73,18 @@ class _Screen2State extends State<Screen2> {
                     });}, icon: Icon(background == Colors.white ? Icons.dark_mode_outlined
                       : Icons.light_mode,)),
                   IconButton(onPressed: (){
-                              Navigator.pop(context);
+                    Navigator.pushNamed(context, '/movements',
+                      arguments: movements.ScreenTransition(objlivraison: objLivraison,
+                        objtransfert: objTransfert,
+                        backgroundColor: background,
+                        FieldColor: fieldColor,
+                        changeThemes: changeTheme
+                      )
+                    );
+                  }, icon: Icon(Icons.emoji_transportation, color: Colors.black)
+                  ),
+                  IconButton(onPressed: (){
+                              Navigator.pushNamed(context, '/');
                             }, icon: Icon(Icons.logout, color: Colors.black)
                   ),
                 ],
@@ -81,7 +97,7 @@ class _Screen2State extends State<Screen2> {
               child:
                 Column(
                     children: [
-                      SizedBox(height: 10),
+                      SizedBox(height: 15),
                       DatePicker(),
                       Container(
                           padding: const EdgeInsets.all(20),
@@ -134,6 +150,7 @@ class _Screen2State extends State<Screen2> {
                             objLivraison.plaque = plaque.text;
                             objLivraison.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
                             objLivraison.logistic_official = logistic_official.text;
+                            objLivraison.numero_mouvement = numero_mvt.text;
                             Navigator.pushNamed(context, "/livraison",
                                 arguments: livraison.ScreenTransition(backgroundColor: background, fieldColor: fieldColor,
                                   objlivraison: objLivraison
@@ -147,6 +164,7 @@ class _Screen2State extends State<Screen2> {
                             objTransfert.plaque = plaque.text;
                             objTransfert.logistic_official = logistic_official.text;
                             objTransfert.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
+                            objTransfert.numero_mouvement = numero_mvt.text;
                             Navigator.pushNamed(context, "/transfert",
                               arguments: transfert.ScreenTransition(backgroundColor: background,
                                 fieldcolor: fieldColor,
