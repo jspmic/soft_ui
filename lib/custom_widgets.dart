@@ -179,8 +179,8 @@ class _stockCentralSuivantState extends State<stockCentralSuivant> {
   }
 }
 
-Map<String, String> oneBoucle = {};
-int count=1;
+List<Map<String, String>> oneBoucle = [];
+int count=0;
 
 class Boucle extends StatefulWidget {
   final String district;
@@ -192,16 +192,15 @@ class Boucle extends StatefulWidget {
 
 class _BoucleState extends State<Boucle> {
   List<Widget> _boucle = [];
-  Map<int, String> quantite = {};
 
   void create_boucle(int count){
-    quantite[count] = "";
+    oneBoucle.add({});
     _boucle.add(Stock(hintText: "Livraison Retour",
         column: LIVRAISON_RETOUR,
         background: background,
         onSelect: (value) {
       setState(() {
-        oneBoucle["livraison_retour"] = value;
+        oneBoucle[count]["livraison_retour"] = value;
       });
         }
     )
@@ -212,7 +211,7 @@ class _BoucleState extends State<Boucle> {
           background: background,
           onSelect: (value) {
             setState(() {
-              oneBoucle["colline"] = value;
+              oneBoucle[count]["colline"] = value;
             });
           }
       )
@@ -222,7 +221,7 @@ class _BoucleState extends State<Boucle> {
           background: background,
           onSelect: (value) {
             setState(() {
-              oneBoucle["input"] = value;
+              oneBoucle[count]["input"] = value;
             });
           }
       )
@@ -233,7 +232,7 @@ class _BoucleState extends State<Boucle> {
           hintText: "Quantité...",
         ),
         onChanged: (value){
-          oneBoucle["quantite"] = value;
+          oneBoucle[count]["quantite"] = value;
         },
 
       ));
@@ -256,7 +255,8 @@ class _BoucleState extends State<Boucle> {
             SizedBox(height: 10,),
             ElevatedButton(onPressed: (){
               setState(() {
-                livraison.objLivraison.boucle[count.toString()] = oneBoucle;
+                livraison.objLivraison.boucle[count.toString()] = oneBoucle[count];
+                print(livraison.objLivraison.boucle[count.toString()]);
                 count +=1;
                 create_boucle(count);
               });
@@ -278,8 +278,8 @@ class CardList extends StatelessWidget {
       return AlertDialog(
         title: Text(data["date"].toString()),
         content: program == "Transfert" ?
-        Text("Logistic Official: ${data["logistic_official"]}\n\n${data["stock_central_suivants"].values}\n\nRetour: ${data["stock_central_retour"]}\n\nMotif: ${data["motif"]}"):
-        Text("Logistic Official: ${data["logistic_official"]}\n\nDistrict: ${data["district"]}\n\nRetour: ${data["stock_central_retour"]}\n\nMotif: ${data["motif"]}"),
+        Text("Logistic Official: ${data["logistic_official"]}\n\n${data["stock_central_suivants"].values}\n\nRetour: ${data["stock_central_retour"]}\n\nPhoto: ${data["photo_mvt"]}\n\nMotif: ${data["motif"]}"):
+        Text("Logistic Official: ${data["logistic_official"]}\n\nDistrict: ${data["district"]}\n\nRetour: ${data["stock_central_retour"]}\n\nPhoto: ${data["photo_mvt"]}\n\nMotif: ${data["motif"]}"),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: Text("Fermer"))
         ],

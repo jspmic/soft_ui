@@ -113,28 +113,20 @@ class _FinalState extends State<Final> {
       mssg = "";
     });
     isLoading = true;
-    /*List? imageUrl = objtransf != null ? await getUrl(objtransf.photo_mvt) : await getUrl(objlivraison!.photo_mvt);
-    if (imageUrl == []){
-      setState(() {
-        isLoading = false;
-      });
-      return;
-    }
-    */
-    //objtransf != null ? objtransf.photo_mvt = imageUrl[0]["url"] : objlivraison?.photo_mvt = imageUrl[0]["url"];
-    Response? isValidRequest = objtransf != null ? await objtransf?.postMe() : await objlivraison?.postMe();
+    Response? isValidRequest = objtransf != null ? await objtransf.postMe() : await objlivraison?.postMe();
     setState(() {
       isLoading = false;
     });
 
     if (isValidRequest!.statusCode < 400) {
+      print(isValidRequest.body);
       setState(() {
         mssg = "Success!";
       });
     }
     else {
       setState(() {
-        print(isValidRequest!.body);
+        print(isValidRequest.body);
         mssg = "Echec!";
       });
     }
@@ -217,9 +209,9 @@ class _FinalState extends State<Final> {
                     : ElevatedButton(onPressed: (){
                   objLivraison?.motif = motif.text;
                   objtransf?.motif = motif.text;
-                  /*String imageB64 = base64Encode(_image!.toList());
+                  String imageB64 = base64Encode(_image!.toList());
                   objtransf?.photo_mvt = imageB64;
-                  objLivraison?.photo_mvt = imageB64;*/
+                  objLivraison?.photo_mvt = imageB64;
                   save(objtransf: objtransf, objlivraison: objLivraison);
                     },
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen), child: Text("Enregistrer",

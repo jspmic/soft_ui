@@ -46,7 +46,7 @@ class _LivraisonScreenState extends State<LivraisonScreen> {
               ElevatedButton(onPressed: (){},
               style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
               child: IconButton(onPressed: (){
-                objLivraison.boucle[count.toString()] = oneBoucle;
+                objLivraison.boucle[count.toString()] = oneBoucle[count];
                 print(objLivraison.boucle);
                 Navigator.pushNamed(context, "/final",
                   arguments: final_page.ScreenTransition(backgroundColor: background, fieldcolor: fieldcolor,

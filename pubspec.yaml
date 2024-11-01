@@ -34,6 +34,7 @@ dependencies:
   http: any
   auto_route: any
   image_picker: any
+  flutter_image_compress: any
 
 
   # The following adds the Cupertino Icons font to your application.
