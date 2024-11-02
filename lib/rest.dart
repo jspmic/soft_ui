@@ -2,8 +2,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 // Address definition
-//const String HOST = "https://jspemic.pythonanywhere.com";
-const String HOST = "http://192.168.43.43:5000";
+const String HOST = "https://jspemic.pythonanywhere.com";
+//const String HOST = "http://192.168.43.43:5000";
 
 
 class Transfert{
@@ -22,6 +22,7 @@ class Transfert{
 
   Future<http.Response> postMe() async{
     Uri url = Uri.parse("$HOST/api/transferts");
+    Map imageUrl = await getUrl(photo_mvt);
     http.Response response = await http.post(
         url,
       headers: <String, String>{
@@ -35,7 +36,7 @@ class Transfert{
         'stock_central_depart': stock_central_depart,
         'stock_central_suivants': jsonEncode(stock_central_suivants),
         'stock_central_retour': stock_central_retour,
-        'photo_mvt': await getUrl(photo_mvt),
+        'photo_mvt': imageUrl != {} ? imageUrl["url"] : "",
         'type_transport': type_transport,
         'user': user,
         'motif': motif
@@ -64,6 +65,7 @@ class Livraison{
 
   Future<http.Response> postMe() async{
     print(jsonEncode(jsonEncode(boucle)));
+    Map imageUrl = await getUrl(photo_mvt);
     Uri url = Uri.parse("$HOST/api/livraisons");
     http.Response response = await http.post(
         url,
@@ -79,7 +81,7 @@ class Livraison{
           'stock_central_depart': stock_central_depart,
           'boucle': jsonEncode(boucle),
           'stock_central_retour': stock_central_retour,
-          'photo_mvt': await getUrl(photo_mvt),
+          'photo_mvt': imageUrl != {} ? imageUrl["url"] : "",
           'type_transport': type_transport,
           'user': user,
           'motif': motif

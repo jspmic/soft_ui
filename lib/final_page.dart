@@ -7,6 +7,8 @@ import 'package:soft/excel_fields.dart';
 import 'package:soft/rest.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:path/path.dart' as p;
 
 late Color? background;
 late Color? fieldColor;
@@ -37,15 +39,31 @@ class Final extends StatefulWidget {
 
 class _FinalState extends State<Final> {
   Uint8List? _image;
+  int quality = 50;
+  CompressFormat format=CompressFormat.jpeg;
   TextEditingController motif = TextEditingController();
 
   Future<XFile?> fromGallery() async{
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null){
-      setState(() {
-        _image = File(pickedFile.path).readAsBytesSync();
-      });
+      final String targetPath = p.join(Directory.systemTemp.path, 'temp.${format.name}');
+      final XFile? compressedImage = await FlutterImageCompress.compressAndGetFile(
+          pickedFile.path,
+          targetPath,
+          quality: quality,
+          format: format
+      );
+      if (compressedImage != null) {
+        setState(() {
+          print("Compressed successfully");
+          _image = File(compressedImage.path).readAsBytesSync();
+        });
+      }
+      else{
+        print("Failed to compress");
+          _image = File(pickedFile.path).readAsBytesSync();
+      }
     }
     return pickedFile;
   }
@@ -54,9 +72,23 @@ class _FinalState extends State<Final> {
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
     if (pickedFile != null){
-      setState(() {
+      final String targetPath = p.join(Directory.systemTemp.path, 'temp.${format.name}');
+      final XFile? compressedImage = await FlutterImageCompress.compressAndGetFile(
+          pickedFile.path,
+          targetPath,
+          quality: quality,
+          format: format
+      );
+      if (compressedImage != null) {
+        setState(() {
+          print("Compressed successfully");
+          _image = File(compressedImage.path).readAsBytesSync();
+        });
+      }
+      else{
+        print("Failed to compress");
         _image = File(pickedFile.path).readAsBytesSync();
-      });
+      }
     }
     return pickedFile;
   }
