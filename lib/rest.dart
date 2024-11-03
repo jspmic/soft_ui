@@ -42,8 +42,6 @@ class Transfert{
         'motif': motif
       })
     );
-    print(response.statusCode);
-    print(response.body);
     return response;
   }
 }
@@ -64,7 +62,6 @@ class Livraison{
   Livraison();
 
   Future<http.Response> postMe() async{
-    print(jsonEncode(jsonEncode(boucle)));
     Map imageUrl = await getUrl(photo_mvt);
     Uri url = Uri.parse("$HOST/api/livraisons");
     http.Response response = await http.post(
@@ -87,8 +84,6 @@ class Livraison{
           'motif': motif
         })
     );
-    print(response.statusCode);
-    print(response.body);
     return response;
   }
 
@@ -143,7 +138,6 @@ Future<bool> isUser(String _n_9032, String _n_9064) async {
       "$HOST/api/list?code=$CODE&_n_9032=$_n_9032&_n_9064=$_n_9064");
   http.Response response = await http.get(url);
   if (response.statusCode == 200) {
-    print("Ok");
     return true;
   }
   return false;

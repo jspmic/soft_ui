@@ -170,7 +170,6 @@ class _stockCentralSuivantState extends State<stockCentralSuivant> {
             setState(() {
               newStock(index);
               index += 1;
-              print(transfert.objTransfert.stock_central_suivants);
             });
           }, style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
               child: Icon(Icons.add, color: Colors.black)),
@@ -256,7 +255,6 @@ class _BoucleState extends State<Boucle> {
             ElevatedButton(onPressed: (){
               setState(() {
                 livraison.objLivraison.boucle[count.toString()] = oneBoucle[count];
-                print(livraison.objLivraison.boucle[count.toString()]);
                 count +=1;
                 create_boucle(count);
               });

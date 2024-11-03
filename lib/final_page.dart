@@ -56,12 +56,10 @@ class _FinalState extends State<Final> {
       );
       if (compressedImage != null) {
         setState(() {
-          print("Compressed successfully");
           _image = File(compressedImage.path).readAsBytesSync();
         });
       }
       else{
-        print("Failed to compress");
           _image = File(pickedFile.path).readAsBytesSync();
       }
     }
@@ -81,12 +79,10 @@ class _FinalState extends State<Final> {
       );
       if (compressedImage != null) {
         setState(() {
-          print("Compressed successfully");
           _image = File(compressedImage.path).readAsBytesSync();
         });
       }
       else{
-        print("Failed to compress");
         _image = File(pickedFile.path).readAsBytesSync();
       }
     }
@@ -151,14 +147,12 @@ class _FinalState extends State<Final> {
     });
 
     if (isValidRequest!.statusCode < 400) {
-      print(isValidRequest.body);
       setState(() {
         mssg = "Success!";
       });
     }
     else {
       setState(() {
-        print(isValidRequest.body);
         mssg = "Echec!";
       });
     }
