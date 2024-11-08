@@ -215,7 +215,7 @@ class _BoucleState extends State<Boucle> {
           }
       )
       );
-      _boucle.add(Stock(hintText: "Input",
+      _boucle.add(Stock(hintText: "Produit",
           column: INPUT,
           background: background,
           onSelect: (value) {
@@ -276,8 +276,8 @@ class CardList extends StatelessWidget {
       return AlertDialog(
         title: Text(data["date"].toString()),
         content: program == "Transfert" ?
-        Text("Logistic Official: ${data["logistic_official"]}\n\n${data["stock_central_suivants"].values}\n\nRetour: ${data["stock_central_retour"]}\n\nPhoto: ${data["photo_mvt"]}\n\nMotif: ${data["motif"]}"):
-        Text("Logistic Official: ${data["logistic_official"]}\n\nDistrict: ${data["district"]}\n\nRetour: ${data["stock_central_retour"]}\n\nPhoto: ${data["photo_mvt"]}\n\nMotif: ${data["motif"]}"),
+        Text("Logistic Official: ${data["logistic_official"]}\n\n${data["stock_central_suivants"].values}\n\nRetour: ${data["stock_central_retour"]}\n\nMotif: ${data["motif"]}"):
+        Text("Logistic Official: ${data["logistic_official"]}\n\nDistrict: ${data["district"]}\n\nRetour: ${data["stock_central_retour"]}\n\nMotif: ${data["motif"]}"),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: Text("Fermer"))
         ],
