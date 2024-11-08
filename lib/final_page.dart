@@ -7,6 +7,8 @@ import 'package:soft/excel_fields.dart';
 import 'package:soft/rest.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:path/path.dart' as p;
 
 late Color? background;
 late Color? fieldColor;
@@ -37,15 +39,29 @@ class Final extends StatefulWidget {
 
 class _FinalState extends State<Final> {
   Uint8List? _image;
+  int quality = 50;
+  CompressFormat format=CompressFormat.jpeg;
   TextEditingController motif = TextEditingController();
 
   Future<XFile?> fromGallery() async{
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null){
-      setState(() {
-        _image = File(pickedFile.path).readAsBytesSync();
-      });
+      final String targetPath = p.join(Directory.systemTemp.path, 'temp.${format.name}');
+      final XFile? compressedImage = await FlutterImageCompress.compressAndGetFile(
+          pickedFile.path,
+          targetPath,
+          quality: quality,
+          format: format
+      );
+      if (compressedImage != null) {
+        setState(() {
+          _image = File(compressedImage.path).readAsBytesSync();
+        });
+      }
+      else{
+          _image = File(pickedFile.path).readAsBytesSync();
+      }
     }
     return pickedFile;
   }
@@ -54,9 +70,21 @@ class _FinalState extends State<Final> {
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
     if (pickedFile != null){
-      setState(() {
+      final String targetPath = p.join(Directory.systemTemp.path, 'temp.${format.name}');
+      final XFile? compressedImage = await FlutterImageCompress.compressAndGetFile(
+          pickedFile.path,
+          targetPath,
+          quality: quality,
+          format: format
+      );
+      if (compressedImage != null) {
+        setState(() {
+          _image = File(compressedImage.path).readAsBytesSync();
+        });
+      }
+      else{
         _image = File(pickedFile.path).readAsBytesSync();
-      });
+      }
     }
     return pickedFile;
   }
@@ -113,16 +141,7 @@ class _FinalState extends State<Final> {
       mssg = "";
     });
     isLoading = true;
-    /*List? imageUrl = objtransf != null ? await getUrl(objtransf.photo_mvt) : await getUrl(objlivraison!.photo_mvt);
-    if (imageUrl == []){
-      setState(() {
-        isLoading = false;
-      });
-      return;
-    }
-    */
-    //objtransf != null ? objtransf.photo_mvt = imageUrl[0]["url"] : objlivraison?.photo_mvt = imageUrl[0]["url"];
-    Response? isValidRequest = objtransf != null ? await objtransf?.postMe() : await objlivraison?.postMe();
+    Response? isValidRequest = objtransf != null ? await objtransf.postMe() : await objlivraison?.postMe();
     setState(() {
       isLoading = false;
     });
@@ -134,7 +153,6 @@ class _FinalState extends State<Final> {
     }
     else {
       setState(() {
-        print(isValidRequest!.body);
         mssg = "Echec!";
       });
     }
@@ -217,9 +235,9 @@ class _FinalState extends State<Final> {
                     : ElevatedButton(onPressed: (){
                   objLivraison?.motif = motif.text;
                   objtransf?.motif = motif.text;
-                  /*String imageB64 = base64Encode(_image!.toList());
+                  String imageB64 = base64Encode(_image!.toList());
                   objtransf?.photo_mvt = imageB64;
-                  objLivraison?.photo_mvt = imageB64;*/
+                  objLivraison?.photo_mvt = imageB64;
                   save(objtransf: objtransf, objlivraison: objLivraison);
                     },
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen), child: Text("Enregistrer",

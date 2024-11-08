@@ -44,7 +44,6 @@ class _TransfertScreenState extends State<TransfertScreen> {
             children: [
               stockCentralSuivant(),
               ElevatedButton(onPressed: (){
-                print(objTransfert.stock_central_suivants);
                 Navigator.pushNamed(context, '/final',
                   arguments: final_page.ScreenTransition(backgroundColor: Background,
                       fieldcolor: fieldColor, objectTransfert: objTransfert)

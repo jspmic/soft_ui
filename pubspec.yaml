@@ -34,6 +34,7 @@ dependencies:
   http: any
   auto_route: any
   image_picker: any
+  flutter_image_compress: any
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -43,7 +44,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: any
+  #flutter_launcher_icons: any
+  icons_launcher: any
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -93,12 +95,19 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-flutter_launcher_icons:
-  android: true
-  ios: true
-  min_sdk_android: 29
+#flutter_launcher_icons:
+#  android: "assets/icon/drawer2.png"
+#  ios: true
+#  min_sdk_android: 29
+#  image_path: "assets/icon/drawer2.png"
+#  remove_alpha_channel_ios: true
+#  remove_alpha_ios: true
+#  adaptive_icon_background: "#ffffff"
+
+icons_launcher:
   image_path: "assets/icon/drawer2.png"
-  remove_alpha_channel_ios: true
-  remove_alpha_ios: true
-  adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/icon/drawer2.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
