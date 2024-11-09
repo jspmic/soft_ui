@@ -81,7 +81,7 @@ class _Screen2State extends State<Screen2> {
                         changeThemes: changeTheme
                       )
                     );
-                  }, icon: Icon(Icons.emoji_transportation, color: Colors.black)
+                  }, icon: Icon(Icons.person_2, color: Colors.black)
                   ),
                   IconButton(onPressed: (){
                               Navigator.pushNamed(context, '/');
@@ -97,10 +97,10 @@ class _Screen2State extends State<Screen2> {
               child:
                 Column(
                     children: [
-                      SizedBox(height: 15),
+					  SizedBox(height: MediaQuery.of(context).size.height/7),
                       DatePicker(),
                       Container(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(5),
                           margin: const EdgeInsets.all(20),
                           child:
                           Column(

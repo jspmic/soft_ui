@@ -36,7 +36,6 @@ void initialize({String? district}){
   }
   list(STOCK_CENTRAL);
   list(TYPE_TRANSPORT);
-  list(PROGRAM);
   list(INPUT);
   list(DISTRICT);
   list(LIVRAISON_RETOUR);
@@ -70,12 +69,9 @@ class _DatePickerState extends State<DatePicker> {
         children: [
           OutlinedButton(onPressed: () => _selectDate(context),
             style: ElevatedButton.styleFrom(backgroundColor: background),
-            child: Text("Date",
+            child: Text(_date == null ? "Date" : "${_date?.day}/${_date?.month}/${_date?.year}",
                 style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
               )),
-          _date == null ? Icon(Icons.date_range, color: background == Colors.white ? Colors.black : Colors.white) : Text("${_date?.day}/${_date?.month}/${_date?.year}",
-              style: TextStyle(fontSize: 18, color: background == Colors.white ? Colors.black
-              : Colors.white))
         ],
       ),
     );
@@ -105,11 +101,8 @@ class _StockState extends State<Stock> {
     super.initState();
     if (widget.district != null){
       list(DISTRICT+5, district: widget.district);
-    }
-    else {
-      list(widget.column);
-    }
-    }
+	  }
+	}
 
   @override
   Widget build(BuildContext context) {
