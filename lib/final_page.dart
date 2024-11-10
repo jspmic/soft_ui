@@ -178,28 +178,31 @@ class _FinalState extends State<Final> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(onPressed: (){
-                  Navigator.pushNamed(context, '/second');
+                  Navigator.popUntil(context, (route){
+                    return route.settings.name == "/second";
+                  });
                 }, icon: Icon(Icons.redo_rounded, color: Colors.black)),
                 IconButton(onPressed: (){
-                  Navigator.pushNamed(context, '/');
-                }, icon: Icon(Icons.logout, color: Colors.black)
-                ),
-              ],
-            ),
-            centerTitle: true,
-            backgroundColor: Colors.lightGreen,
-          ),
-          body:
-          SingleChildScrollView(
-            child:
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                  Navigator.popUntil(context, (route){
+                    return route.isFirst;
+                  });
+                  }, icon: Icon(Icons.logout, color: Colors.black))
+                  ],
+                  ),
+                  centerTitle: true,
+                  backgroundColor: Colors.lightGreen,
+                  ),
+                  body:
+                  SingleChildScrollView(
+                  child:
+                  Center(
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 10),
-                    Stock(hintText: "Stock Central Retour",
-                        column: STOCK_CENTRAL,
-                        background: background, onSelect: (value){
+                  SizedBox(height: 10),
+                  Stock(hintText: "Stock Central Retour",
+                  column: STOCK_CENTRAL,
+                  background: background, onSelect: (value){
                       objLivraison != null ? objLivraison?.stock_central_retour = value
                           : objtransf?.stock_central_retour = value;
                         }),

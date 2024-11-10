@@ -90,7 +90,9 @@ class _MovementsState extends State<Movements> {
               Navigator.pop(context, '/second');
         }, icon: Icon(Icons.arrow_back, color: Colors.black,)),
             IconButton(onPressed: (){
-              Navigator.pushNamed(context, '/');
+              Navigator.popUntil(context, (route){
+                return route.isFirst;
+              });
             }, icon: Icon(Icons.logout, color: Colors.black)
             ),
           ],
