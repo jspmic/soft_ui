@@ -71,7 +71,7 @@ class _Screen2State extends State<Screen2> {
                       fieldColor = changeTheme ? Colors.grey[300] : Colors.black;
                       changeTheme = !changeTheme;
                     });}, icon: Icon(background == Colors.white ? Icons.dark_mode_outlined
-                      : Icons.light_mode,)),
+                      : Icons.light_mode, color: Colors.black)),
                   IconButton(onPressed: (){
                     Navigator.pushNamed(context, '/movements',
                       arguments: movements.ScreenTransition(objlivraison: objLivraison,
@@ -84,7 +84,7 @@ class _Screen2State extends State<Screen2> {
                   }, icon: Icon(Icons.person_2, color: Colors.black)
                   ),
                   IconButton(onPressed: (){
-                              Navigator.pushNamed(context, '/');
+                              Navigator.pop(context);
                             }, icon: Icon(Icons.logout, color: Colors.black)
                   ),
                 ],
@@ -116,7 +116,6 @@ class _Screen2State extends State<Screen2> {
                                 style: TextStyle(color: textColor, fontSize: 15),
                                 controller: plaque,
                                 decoration: InputDecoration(
-
                                   hintText: "Plaque...",
                                 ),
                               ),
