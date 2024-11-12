@@ -80,7 +80,7 @@ class _MovementsState extends State<Movements> {
             dividerColor: Colors.lightGreen,
           )
       ),
-      title: "Mes mouvements",
+      title: "Soft",
       home: Scaffold(
         backgroundColor: background,
         appBar: AppBar(title: Row(

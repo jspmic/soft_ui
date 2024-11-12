@@ -170,7 +170,7 @@ class _FinalState extends State<Final> {
             dividerColor: Colors.lightGreen,
           )
       ),
-      title: "Finalisation",
+      title: "Soft",
       home: Scaffold(
           backgroundColor: background,
           appBar: AppBar(

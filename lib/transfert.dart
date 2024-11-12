@@ -32,7 +32,7 @@ class _TransfertScreenState extends State<TransfertScreen> {
         theme: ThemeData(
         colorScheme: Background == Colors.white ? const ColorScheme.light(primary: Colors.lightGreen)
         : const ColorScheme.dark(primary: Colors.lightGreen)),
-      title: "Transfert",
+      title: "Soft",
       home: Scaffold(
         backgroundColor: Background,
         appBar: AppBar(title: Text("Transfert", style: TextStyle(color: Colors.black),),

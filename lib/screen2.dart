@@ -56,7 +56,7 @@ class _Screen2State extends State<Screen2> {
           dividerColor: Colors.lightGreen,
         )
       ),
-      title: "Program",
+      title: "Soft",
       home: Scaffold(
         backgroundColor: background,
         appBar: AppBar(
@@ -97,7 +97,7 @@ class _Screen2State extends State<Screen2> {
               child:
                 Column(
                     children: [
-					  SizedBox(height: MediaQuery.of(context).size.height/7),
+					  SizedBox(height: MediaQuery.of(context).size.height/10),
                       DatePicker(),
                       Container(
                           padding: const EdgeInsets.all(5),
