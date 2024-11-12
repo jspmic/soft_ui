@@ -1,10 +1,10 @@
-import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // Address definition
-const String HOST = "https://jspemic.pythonanywhere.com";
-// const String HOST = "http://192.168.43.43:5000";
+//const String HOST = "https://jspemic.pythonanywhere.com";
+const String HOST = "http://192.168.43.81:5000";
 
 
 class Transfert{
@@ -156,16 +156,19 @@ Uri url = Uri.parse("$HOST/api/image");
 	}
 }
 
-Future<bool> isUser(String n_9032, String n_9064) async {
-  var code = "JK9X80L4RT";
-  var url = Uri.parse(
-      "$HOST/api/list?code=$code&_n_9032=$n_9032&_n_9064=$n_9064");
+Future<bool> isUser(String _n_9032, String _n_9064) async {
+	await dotenv.load(fileName: ".env");
+  String code = dotenv.env["CODE"].toString();
+  var url = Uri.parse("$HOST/api/list");
   try{
-	  http.Response response = await http.get(url).timeout(Duration(seconds: 40), onTimeout: (){
+	  http.Response response = await http.get(url,
+			headers: {"x-api-key": code,
+				"Authorization": "$_n_9032:$_n_9064"}
+		).timeout(Duration(seconds: 30), onTimeout: (){
 		  return http.Response("No connection", 404);
 	  });
 	  if (response.statusCode == 200) {
-		return true;
+			return true;
 	  }
 	  return false;
   }
