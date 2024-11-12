@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:soft/rest.dart';
+import 'package:crypto/crypto.dart';
 import 'package:soft/screen2.dart' as screen2;
 import 'package:soft/movements.dart' as movements;
 import 'package:soft/transfert.dart' as transfert;
@@ -92,7 +95,8 @@ class _LoginPageState extends State<LoginPage> {
       state = Colors.blue;
     });
     isLoading = true;
-    bool isValidUser = await isUser(_uname, _pssw);
+    String _hashed = sha256.convert(utf8.encode(_pssw)).toString();
+    bool isValidUser = await isUser(_uname, _hashed);
     //bool isValidUser = true;
     setState(() {
       isLoading = false;
@@ -119,9 +123,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context){
-      return
-        SafeArea(
-          child: SizedBox(
+      return SizedBox(
             width: double.infinity,
             height: double.infinity,
             child: Scaffold(
@@ -192,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                           style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
                           child: Text("Se connecter", style: TextStyle(color: Colors.black),),)
           
-                  ])))),
+                  ]))),
           ),
         );
   }
