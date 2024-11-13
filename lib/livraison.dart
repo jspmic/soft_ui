@@ -6,16 +6,19 @@ import 'package:soft/final_page.dart' as final_page;
 late Color? background;
 late Color? fieldcolor;
 late Livraison objLivraison;
+late List<Widget> boucle;
 
 class ScreenTransition{
   late Color? backgroundColor;
   late Color? fieldColor;
   late Livraison objlivraison;
+  late List<Widget> boucleFromScreen2;
   ScreenTransition({required this.backgroundColor, required this.fieldColor,
-  required this.objlivraison}){
+  required this.objlivraison, required this.boucleFromScreen2}){
     background = backgroundColor;
     fieldcolor = fieldColor;
     objLivraison = objlivraison;
+	boucle = boucleFromScreen2;
   }
 }
 
@@ -29,6 +32,7 @@ class LivraisonScreen extends StatefulWidget {
 class _LivraisonScreenState extends State<LivraisonScreen> {
   @override
   Widget build(BuildContext context){
+	oneBoucle = [];
     return MaterialApp(
       theme: ThemeData(
           colorScheme: background == Colors.white ? const ColorScheme.light(primary: Colors.lightGreen)
@@ -42,7 +46,7 @@ class _LivraisonScreenState extends State<LivraisonScreen> {
         ),
         body: SingleChildScrollView(child: Column(
           children: [
-            Boucle(district: objLivraison.district),
+            Boucle(boucle: boucle, district: objLivraison.district),
               ElevatedButton(onPressed: (){},
               style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
               child: IconButton(onPressed: (){

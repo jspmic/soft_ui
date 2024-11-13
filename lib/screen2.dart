@@ -149,10 +149,15 @@ class _Screen2State extends State<Screen2> {
                             objLivraison.plaque = plaque.text;
                             objLivraison.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
                             objLivraison.logistic_official = logistic_official.text;
+							objLivraison.boucle = {};
                             objLivraison.numero_mouvement = numero_mvt.text;
+							List<Widget> boucleFromScreen2 = [];
+							count = 0;
+							oneBoucle = [];
                             Navigator.pushNamed(context, "/livraison",
                                 arguments: livraison.ScreenTransition(backgroundColor: background, fieldColor: fieldColor,
-                                  objlivraison: objLivraison
+                                  objlivraison: objLivraison,
+								  boucleFromScreen2: boucleFromScreen2
                                 )
                             );
                           },
@@ -164,6 +169,7 @@ class _Screen2State extends State<Screen2> {
                             objTransfert.logistic_official = logistic_official.text;
                             objTransfert.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
                             objTransfert.numero_mouvement = numero_mvt.text;
+							objTransfert.stock_central_suivants = {};
                             Navigator.pushNamed(context, "/transfert",
                               arguments: transfert.ScreenTransition(backgroundColor: background,
                                 fieldcolor: fieldColor,

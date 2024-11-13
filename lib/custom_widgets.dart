@@ -176,16 +176,17 @@ int count=0;
 
 class Boucle extends StatefulWidget {
   final String district;
-  const Boucle({super.key, required this.district});
+  final List<Widget> boucle;
+  const Boucle({super.key, required this.boucle, required this.district});
 
   @override
   State<Boucle> createState() => _BoucleState();
 }
 
 class _BoucleState extends State<Boucle> {
-  List<Widget> _boucle = [];
 
-  void create_boucle(int count){
+  List<Widget> initBoucle = [];
+  List<Widget> create_boucle(List<Widget> _boucle, int count){
     oneBoucle.add({});
     _boucle.add(Stock(hintText: "Livraison Retour",
         column: LIVRAISON_RETOUR,
@@ -228,10 +229,14 @@ class _BoucleState extends State<Boucle> {
         },
 
       ));
+	  return _boucle;
   }
   @override
   void initState(){
-    create_boucle(count);
+	count = 0;
+	oneBoucle = [];
+	objLivraison.boucle = {};
+    initBoucle = create_boucle(initBoucle, count);
     super.initState();
   }
   @override
@@ -243,13 +248,13 @@ class _BoucleState extends State<Boucle> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ..._boucle,
+            ...initBoucle,
             SizedBox(height: 10,),
             ElevatedButton(onPressed: (){
               setState(() {
                 livraison.objLivraison.boucle[count.toString()] = oneBoucle[count];
                 count +=1;
-                create_boucle(count);
+                create_boucle(initBoucle, count);
               });
             },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
