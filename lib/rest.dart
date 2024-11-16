@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // Address definition
-const String HOST = "https://jspemic.pythonanywhere.com";
-// const String HOST = "http://192.168.43.81:5000";
+// const String HOST = "https://jspemic.pythonanywhere.com";
+const String HOST = "http://192.168.43.43:5000";
 
 
 class Transfert{
@@ -16,6 +16,7 @@ class Transfert{
   Map<String, String?> stock_central_suivants = {};
   late String stock_central_retour;
   String photo_mvt = "";
+  String photo_journal = "";
   late String type_transport;
   late String user;
   late String? motif;
@@ -23,8 +24,10 @@ class Transfert{
 
   Future<http.Response> postMe() async{
     Uri url = Uri.parse("$HOST/api/transferts");
-    Map imageUrl = await getUrl(photo_mvt);
-	if (!imageUrl.containsKey("message")){
+    Map imageMvt = await getUrl(photo_mvt);
+    Map imageJournal = await getUrl(photo_journal);
+	if (!imageMvt.containsKey("message") && !imageJournal.containsKey("message")){
+		print("Succeeded");
 		http.Response response = await http.post(
 			url,
 		  headers: <String, String>{
@@ -38,7 +41,8 @@ class Transfert{
 			'stock_central_depart': stock_central_depart,
 			'stock_central_suivants': jsonEncode(stock_central_suivants),
 			'stock_central_retour': stock_central_retour,
-			'photo_mvt': imageUrl != {} ? imageUrl["url"] : "",
+			'photo_mvt': imageMvt != {} ? imageMvt["url"] : "",
+			'photo_journal': imageJournal != {} ? imageJournal["url"] : "",
 			'type_transport': type_transport,
 			'user': user,
 			'motif': motif
@@ -47,6 +51,7 @@ class Transfert{
 		return response;
 	  }
 	else{
+		print("Failed");
 		return http.Response("{\"message\": \"Pas de connexion\"}", 404);
 		}
 	}
@@ -62,35 +67,45 @@ class Livraison{
   late Map<String, Map<String, String>> boucle = {};
   late String stock_central_retour;
   String photo_mvt = "";
+  String photo_journal = "";
   late String type_transport;
   late String user;
   late String? motif;
   Livraison();
 
   Future<http.Response> postMe() async{
-    Map imageUrl = await getUrl(photo_mvt);
+    Map imageMvt = await getUrl(photo_mvt);
+    Map imageJournal = await getUrl(photo_journal);
     Uri url = Uri.parse("$HOST/api/livraisons");
-    http.Response response = await http.post(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8'
-        },
-        body: jsonEncode(<String, dynamic>{
-          'date': date,
-          'plaque': plaque,
-          'district': district,
-          'logistic_official': logistic_official,
-          'numero_mouvement': numero_mouvement,
-          'stock_central_depart': stock_central_depart,
-          'boucle': jsonEncode(boucle),
-          'stock_central_retour': stock_central_retour,
-          'photo_mvt': imageUrl != {} ? imageUrl["url"] : "",
-          'type_transport': type_transport,
-          'user': user,
-          'motif': motif
-        })
-    );
-    return response;
+	if (!imageMvt.containsKey("message") && !imageJournal.containsKey("message")){
+		print("Succeeded");
+		http.Response response = await http.post(
+			url,
+			headers: <String, String>{
+			  'Content-Type': 'application/json; charset=UTF-8'
+			},
+			body: jsonEncode(<String, dynamic>{
+			  'date': date,
+			  'plaque': plaque,
+			  'district': district,
+			  'logistic_official': logistic_official,
+			  'numero_mouvement': numero_mouvement,
+			  'stock_central_depart': stock_central_depart,
+			  'boucle': jsonEncode(boucle),
+			  'stock_central_retour': stock_central_retour,
+			  'photo_mvt': imageMvt != {} ? imageMvt["url"] : "",
+			  'photo_journal': imageJournal != {} ? imageJournal["url"] : "",
+			  'type_transport': type_transport,
+			  'user': user,
+			  'motif': motif
+			})
+		);
+		return response;
+	}
+	else{
+		print("Failed");
+		return http.Response("{\"message\": \"Pas de connexion\"}", 404);
+	}
   }
 
 }
