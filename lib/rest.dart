@@ -99,7 +99,7 @@ class Livraison{
 			  'user': user,
 			  'motif': motif
 			})
-		);
+		).timeout(Duration(minutes: 1, seconds: 20));
 		return response;
 	}
 	else{

@@ -243,6 +243,9 @@ class _FinalState extends State<Final> {
                         hintText: "Motif...",
                       ),
                     )),
+                    //Divider(),
+                    SizedBox(height: 10.0),
+                    Text("Photo du mouvement"),
                     Padding(
                       padding: const EdgeInsets.all(30.0),
                       child: Row(
@@ -252,10 +255,13 @@ class _FinalState extends State<Final> {
                               CircleAvatar(
                                 radius: 80, backgroundImage: MemoryImage(_image!),
                               )
-                          : const CircleAvatar(radius: 80,),
+                          : const CircleAvatar(radius: 80),
                           IconButton(onPressed: () => imagePicker(context, 0), icon: const Icon(Icons.add_photo_alternate)),
                         ],
                       )),
+                    //Divider(height: 20.0),
+                    SizedBox(height: 10.0),
+                    Text("Photo du journal du camion"),
                     Padding(
                       padding: const EdgeInsets.all(30.0),
                       child: Row(
