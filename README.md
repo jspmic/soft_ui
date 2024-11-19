@@ -1,10 +1,11 @@
-# Soft
-This app handles the management of the operations of a local enterprise.
-If you want to find inspiration from it, feel free to clone it.
+<img title="Soft" alt="Logo of the app" src="./assets/icon/drawer2.png">
+
+This app handles the management of the operations of a local enterprise called Soft.<br />
+If you want to find inspiration from it (like particular uses of specific widgets, secure ways to interact with an API, ...), feel free to clone it.
 
 # Behind the scenes
 This app is connected to a REST api i wrote in python.
-The code for the REST api is private(for security purposes), but if you want to see it, contact me.
+The code for the REST api is public and free to use (check my repo <a href="https://github.com/jspmic/rest-api">rest-api</a>).
 
 # Future plans
 - Beautify this README file
