@@ -39,57 +39,80 @@ class Final extends StatefulWidget {
 
 class _FinalState extends State<Final> {
   Uint8List? _image;
+  Uint8List? _journal;
   int quality = 50;
   CompressFormat format=CompressFormat.jpeg;
   TextEditingController motif = TextEditingController();
 
-  Future<XFile?> fromGallery() async{
+  Future<XFile?> fromGallery(int src) async {
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null){
-      final String targetPath = p.join(Directory.systemTemp.path, 'temp.${format.name}');
-      final XFile? compressedImage = await FlutterImageCompress.compressAndGetFile(
+    if (pickedFile != null) {
+      final String targetPath = p.join(
+          Directory.systemTemp.path, 'temp.${format.name}');
+      final XFile? compressedImage = await FlutterImageCompress
+          .compressAndGetFile(
           pickedFile.path,
           targetPath,
           quality: quality,
           format: format
       );
+      Uint8List selectedImage;
       if (compressedImage != null) {
+        selectedImage = File(compressedImage.path).readAsBytesSync();
+      }
+      else {
+        selectedImage = File(pickedFile.path).readAsBytesSync();
+      }
+      if (src == 0) {
         setState(() {
-          _image = File(compressedImage.path).readAsBytesSync();
+          _image = selectedImage;
         });
       }
       else{
-          _image = File(pickedFile.path).readAsBytesSync();
+        setState(() {
+          _journal = selectedImage;
+        });
       }
     }
     return pickedFile;
   }
 
-  Future<XFile?> fromCamera() async{
+  Future<XFile?> fromCamera(int src) async{
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null){
-      final String targetPath = p.join(Directory.systemTemp.path, 'temp.${format.name}');
-      final XFile? compressedImage = await FlutterImageCompress.compressAndGetFile(
+    if (pickedFile != null) {
+      final String targetPath = p.join(
+          Directory.systemTemp.path, 'temp.${format.name}');
+      final XFile? compressedImage = await FlutterImageCompress
+          .compressAndGetFile(
           pickedFile.path,
           targetPath,
           quality: quality,
           format: format
       );
+      Uint8List selectedImage;
       if (compressedImage != null) {
+        selectedImage = File(compressedImage.path).readAsBytesSync();
+      }
+      else {
+        selectedImage = File(pickedFile.path).readAsBytesSync();
+      }
+      if (src == 0) {
         setState(() {
-          _image = File(compressedImage.path).readAsBytesSync();
+          _image = selectedImage;
         });
       }
       else{
-        _image = File(pickedFile.path).readAsBytesSync();
+        setState(() {
+          _journal = selectedImage;
+        });
       }
     }
     return pickedFile;
   }
 
-  void imagePicker(BuildContext context){
+  void imagePicker(BuildContext context, int sourceCode){
     showModalBottomSheet(backgroundColor: background == Colors.white? Colors.black
         : Colors.white, context: context, builder: (builder){
       return SizedBox(
@@ -101,7 +124,7 @@ class _FinalState extends State<Final> {
             children: [
               Expanded(
                 child: InkWell(
-                  onTap: () => fromGallery(),
+                  onTap: () => fromGallery(sourceCode),
                   child: Column(
                     children: [
                       Icon(Icons.image_rounded, size: 40, color: background == Colors.white ? Colors.white :
@@ -114,7 +137,7 @@ class _FinalState extends State<Final> {
               ),
               Expanded(
                 child: InkWell(
-                  onTap: () => fromCamera(),
+                  onTap: () => fromCamera(sourceCode),
                   child: Column(
                     children: [
                       Icon(Icons.camera_alt, size: 40, color: background == Colors.white ? Colors.white :
@@ -170,7 +193,7 @@ class _FinalState extends State<Final> {
             dividerColor: Colors.lightGreen,
           )
       ),
-      title: "Finalisation",
+      title: "Soft",
       home: Scaffold(
           backgroundColor: background,
           appBar: AppBar(
@@ -178,28 +201,31 @@ class _FinalState extends State<Final> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(onPressed: (){
-                  Navigator.pushNamed(context, '/second');
+                  Navigator.popUntil(context, (route){
+                    return route.settings.name == "/second";
+                  });
                 }, icon: Icon(Icons.redo_rounded, color: Colors.black)),
                 IconButton(onPressed: (){
-                  Navigator.pushNamed(context, '/');
-                }, icon: Icon(Icons.logout, color: Colors.black)
-                ),
-              ],
-            ),
-            centerTitle: true,
-            backgroundColor: Colors.lightGreen,
-          ),
-          body:
-          SingleChildScrollView(
-            child:
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                  Navigator.popUntil(context, (route){
+                    return route.isFirst;
+                  });
+                  }, icon: Icon(Icons.logout, color: Colors.black))
+                  ],
+                  ),
+                  centerTitle: true,
+                  backgroundColor: Colors.lightGreen,
+                  ),
+                  body:
+                  SingleChildScrollView(
+                  child:
+                  Center(
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 10),
-                    Stock(hintText: "Stock Central Retour",
-                        column: STOCK_CENTRAL,
-                        background: background, onSelect: (value){
+                  SizedBox(height: 10),
+                  Stock(hintText: "Stock Central Retour",
+                  column: STOCK_CENTRAL,
+                  background: background, onSelect: (value){
                       objLivraison != null ? objLivraison?.stock_central_retour = value
                           : objtransf?.stock_central_retour = value;
                         }),
@@ -217,6 +243,9 @@ class _FinalState extends State<Final> {
                         hintText: "Motif...",
                       ),
                     )),
+                    //Divider(),
+                    SizedBox(height: 10.0),
+                    Text("Photo du mouvement"),
                     Padding(
                       padding: const EdgeInsets.all(30.0),
                       child: Row(
@@ -226,8 +255,24 @@ class _FinalState extends State<Final> {
                               CircleAvatar(
                                 radius: 80, backgroundImage: MemoryImage(_image!),
                               )
-                          : const CircleAvatar(radius: 80,),
-                          IconButton(onPressed: () => imagePicker(context), icon: const Icon(Icons.add_photo_alternate)),
+                          : const CircleAvatar(radius: 80),
+                          IconButton(onPressed: () => imagePicker(context, 0), icon: const Icon(Icons.add_photo_alternate)),
+                        ],
+                      )),
+                    //Divider(height: 20.0),
+                    SizedBox(height: 10.0),
+                    Text("Photo du journal du camion"),
+                    Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _journal != null ?
+                              CircleAvatar(
+                                radius: 80, backgroundImage: MemoryImage(_journal!),
+                              )
+                          : const CircleAvatar(radius: 80),
+                          IconButton(onPressed: () => imagePicker(context, 1), icon: const Icon(Icons.add_photo_alternate)),
                         ],
                       ),
                     ),
@@ -236,8 +281,11 @@ class _FinalState extends State<Final> {
                   objLivraison?.motif = motif.text;
                   objtransf?.motif = motif.text;
                   String imageB64 = base64Encode(_image!.toList());
+                  String journalB64 = base64Encode(_journal!.toList());
                   objtransf?.photo_mvt = imageB64;
+                  objtransf?.photo_journal = journalB64;
                   objLivraison?.photo_mvt = imageB64;
+                  objLivraison?.photo_journal = journalB64;
                   save(objtransf: objtransf, objlivraison: objLivraison);
                     },
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen), child: Text("Enregistrer",

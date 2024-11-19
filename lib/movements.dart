@@ -80,7 +80,7 @@ class _MovementsState extends State<Movements> {
             dividerColor: Colors.lightGreen,
           )
       ),
-      title: "Mes mouvements",
+      title: "Soft",
       home: Scaffold(
         backgroundColor: background,
         appBar: AppBar(title: Row(
@@ -90,7 +90,9 @@ class _MovementsState extends State<Movements> {
               Navigator.pop(context, '/second');
         }, icon: Icon(Icons.arrow_back, color: Colors.black,)),
             IconButton(onPressed: (){
-              Navigator.pushNamed(context, '/');
+              Navigator.popUntil(context, (route){
+                return route.isFirst;
+              });
             }, icon: Icon(Icons.logout, color: Colors.black)
             ),
           ],
@@ -102,35 +104,31 @@ class _MovementsState extends State<Movements> {
               SizedBox(height: 15),
               DatePicker(),
               SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SegmentedButton(segments: [
-                    ButtonSegment(value: "Livraison",
-                      label: Text("Livraison"),
-                    ),
-                    ButtonSegment(value: "Transfert",
-                      label: Text("Transfert")
-                    )
-                  ],
-                    selected: program,
-                    onSelectionChanged: updateSelected,
-                    selectedIcon: Icon(Icons.fire_truck),
-                    style: SegmentedButton.styleFrom(selectedBackgroundColor: Colors.lightGreen
-                    ),
-                  ),
-                  IconButton(onPressed: (){
-                    setState(() {
-                      String newDate = dateSelected == null ? "*" :
-                      "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
-                      populateContent(program: program.first, date: newDate, user: objTransfert == null ? objLivraison?.user : objTransfert?.user);
-                    });
-                  },
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
-                    icon: Icon(Icons.list_alt, color: Colors.black)),
-                ],
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.06),
+			  SegmentedButton(segments: [
+				ButtonSegment(value: "Livraison",
+				  label: Text("Livraison"),
+				),
+				ButtonSegment(value: "Transfert",
+				  label: Text("Transfert")
+				)
+			  ],
+				selected: program,
+				onSelectionChanged: updateSelected,
+				selectedIcon: Icon(Icons.fire_truck),
+				style: SegmentedButton.styleFrom(selectedBackgroundColor: Colors.lightGreen
+				),
+			  ),
+              SizedBox(height: 15),
+			  IconButton(onPressed: (){
+				setState(() {
+				  String newDate = dateSelected == null ? "*" :
+				  "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
+				  populateContent(program: program.first, date: newDate, user: objTransfert == null ? objLivraison?.user : objTransfert?.user);
+				});
+			  },
+				style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
+				icon: Icon(Icons.list_alt, color: Colors.black)),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
               isLoading ? CircularProgressIndicator() : Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: content.map((element) => Padding(

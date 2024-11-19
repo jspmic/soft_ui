@@ -36,7 +36,6 @@ void initialize({String? district}){
   }
   list(STOCK_CENTRAL);
   list(TYPE_TRANSPORT);
-  list(PROGRAM);
   list(INPUT);
   list(DISTRICT);
   list(LIVRAISON_RETOUR);
@@ -70,12 +69,9 @@ class _DatePickerState extends State<DatePicker> {
         children: [
           OutlinedButton(onPressed: () => _selectDate(context),
             style: ElevatedButton.styleFrom(backgroundColor: background),
-            child: Text("Date",
+            child: Text(_date == null ? "Date" : "${_date?.day}/${_date?.month}/${_date?.year}",
                 style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
               )),
-          _date == null ? Icon(Icons.date_range, color: background == Colors.white ? Colors.black : Colors.white) : Text("${_date?.day}/${_date?.month}/${_date?.year}",
-              style: TextStyle(fontSize: 18, color: background == Colors.white ? Colors.black
-              : Colors.white))
         ],
       ),
     );
@@ -105,11 +101,8 @@ class _StockState extends State<Stock> {
     super.initState();
     if (widget.district != null){
       list(DISTRICT+5, district: widget.district);
-    }
-    else {
-      list(widget.column);
-    }
-    }
+	  }
+	}
 
   @override
   Widget build(BuildContext context) {
@@ -183,16 +176,17 @@ int count=0;
 
 class Boucle extends StatefulWidget {
   final String district;
-  const Boucle({super.key, required this.district});
+  final List<Widget> boucle;
+  const Boucle({super.key, required this.boucle, required this.district});
 
   @override
   State<Boucle> createState() => _BoucleState();
 }
 
 class _BoucleState extends State<Boucle> {
-  List<Widget> _boucle = [];
 
-  void create_boucle(int count){
+  List<Widget> initBoucle = [];
+  List<Widget> create_boucle(List<Widget> _boucle, int count){
     oneBoucle.add({});
     _boucle.add(Stock(hintText: "Livraison Retour",
         column: LIVRAISON_RETOUR,
@@ -235,10 +229,14 @@ class _BoucleState extends State<Boucle> {
         },
 
       ));
+	  return _boucle;
   }
   @override
   void initState(){
-    create_boucle(count);
+	count = 0;
+	oneBoucle = [];
+	objLivraison.boucle = {};
+    initBoucle = create_boucle(initBoucle, count);
     super.initState();
   }
   @override
@@ -250,13 +248,13 @@ class _BoucleState extends State<Boucle> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ..._boucle,
+            ...initBoucle,
             SizedBox(height: 10,),
             ElevatedButton(onPressed: (){
               setState(() {
                 livraison.objLivraison.boucle[count.toString()] = oneBoucle[count];
                 count +=1;
-                create_boucle(count);
+                create_boucle(initBoucle, count);
               });
             },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),

@@ -1,9 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // Address definition
 const String HOST = "https://jspemic.pythonanywhere.com";
-//const String HOST = "http://192.168.43.43:5000";
+// const String HOST = "http://192.168.43.43:5000";
 
 
 class Transfert{
@@ -15,6 +16,7 @@ class Transfert{
   Map<String, String?> stock_central_suivants = {};
   late String stock_central_retour;
   String photo_mvt = "";
+  String photo_journal = "";
   late String type_transport;
   late String user;
   late String? motif;
@@ -22,28 +24,37 @@ class Transfert{
 
   Future<http.Response> postMe() async{
     Uri url = Uri.parse("$HOST/api/transferts");
-    Map imageUrl = await getUrl(photo_mvt);
-    http.Response response = await http.post(
-        url,
-      headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8'
-      },
-      body: jsonEncode(<String, dynamic>{
-        'date': date,
-        'plaque': plaque,
-        'logistic_official': logistic_official,
-        'numero_mouvement': numero_mouvement,
-        'stock_central_depart': stock_central_depart,
-        'stock_central_suivants': jsonEncode(stock_central_suivants),
-        'stock_central_retour': stock_central_retour,
-        'photo_mvt': imageUrl != {} ? imageUrl["url"] : "",
-        'type_transport': type_transport,
-        'user': user,
-        'motif': motif
-      })
-    );
-    return response;
-  }
+    Map imageMvt = await getUrl(photo_mvt);
+    Map imageJournal = await getUrl(photo_journal);
+	if (!imageMvt.containsKey("message") && !imageJournal.containsKey("message")){
+		print("Succeeded");
+		http.Response response = await http.post(
+			url,
+		  headers: <String, String>{
+			  'Content-Type': 'application/json; charset=UTF-8'
+		  },
+		  body: jsonEncode(<String, dynamic>{
+			'date': date,
+			'plaque': plaque,
+			'logistic_official': logistic_official,
+			'numero_mouvement': numero_mouvement,
+			'stock_central_depart': stock_central_depart,
+			'stock_central_suivants': jsonEncode(stock_central_suivants),
+			'stock_central_retour': stock_central_retour,
+			'photo_mvt': imageMvt != {} ? imageMvt["url"] : "",
+			'photo_journal': imageJournal != {} ? imageJournal["url"] : "",
+			'type_transport': type_transport,
+			'user': user,
+			'motif': motif
+		  })
+		);
+		return response;
+	  }
+	else{
+		print("Failed");
+		return http.Response("{\"message\": \"Pas de connexion\"}", 404);
+		}
+	}
 }
 
 class Livraison{
@@ -56,35 +67,45 @@ class Livraison{
   late Map<String, Map<String, String>> boucle = {};
   late String stock_central_retour;
   String photo_mvt = "";
+  String photo_journal = "";
   late String type_transport;
   late String user;
   late String? motif;
   Livraison();
 
   Future<http.Response> postMe() async{
-    Map imageUrl = await getUrl(photo_mvt);
+    Map imageMvt = await getUrl(photo_mvt);
+    Map imageJournal = await getUrl(photo_journal);
     Uri url = Uri.parse("$HOST/api/livraisons");
-    http.Response response = await http.post(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8'
-        },
-        body: jsonEncode(<String, dynamic>{
-          'date': date,
-          'plaque': plaque,
-          'district': district,
-          'logistic_official': logistic_official,
-          'numero_mouvement': numero_mouvement,
-          'stock_central_depart': stock_central_depart,
-          'boucle': jsonEncode(boucle),
-          'stock_central_retour': stock_central_retour,
-          'photo_mvt': imageUrl != {} ? imageUrl["url"] : "",
-          'type_transport': type_transport,
-          'user': user,
-          'motif': motif
-        })
-    );
-    return response;
+	if (!imageMvt.containsKey("message") && !imageJournal.containsKey("message")){
+		print("Succeeded");
+		http.Response response = await http.post(
+			url,
+			headers: <String, String>{
+			  'Content-Type': 'application/json; charset=UTF-8'
+			},
+			body: jsonEncode(<String, dynamic>{
+			  'date': date,
+			  'plaque': plaque,
+			  'district': district,
+			  'logistic_official': logistic_official,
+			  'numero_mouvement': numero_mouvement,
+			  'stock_central_depart': stock_central_depart,
+			  'boucle': jsonEncode(boucle),
+			  'stock_central_retour': stock_central_retour,
+			  'photo_mvt': imageMvt != {} ? imageMvt["url"] : "",
+			  'photo_journal': imageJournal != {} ? imageJournal["url"] : "",
+			  'type_transport': type_transport,
+			  'user': user,
+			  'motif': motif
+			})
+		).timeout(Duration(minutes: 1, seconds: 20));
+		return response;
+	}
+	else{
+		print("Failed");
+		return http.Response("{\"message\": \"Pas de connexion\"}", 404);
+	}
   }
 
 }
@@ -92,53 +113,81 @@ class Livraison{
 // GET methods session
 
 Future<List> getTransfert(String date, String user) async {
-  var url = Uri.parse("$HOST/api/transferts?date=$date&user=$user");
-  http.Response response = await http.get(url);
-  var decoded = [];
-  if (response.statusCode == 200) {
-    String data = response.body;
-    decoded = jsonDecode(data);
-  } else {
-    decoded = [];
-  }
-  return decoded;
+	var url = Uri.parse("$HOST/api/transferts?date=$date&user=$user");
+	try {
+		http.Response response = await http.get(url);
+		var decoded = [];
+		if (response.statusCode == 200) {
+		String data = response.body;
+		decoded = jsonDecode(data);
+		} else {
+		decoded = [];
+		}
+		return decoded;
+	}
+	on http.ClientException{
+		return [];
+	}
 }
 
 Future<List> getLivraison(String date, String user) async {
-  var url = Uri.parse("$HOST/api/livraisons?date=$date&user=$user");
-  http.Response response = await http.get(url);
-  var decoded = [];
-  if (response.statusCode == 200) {
-    String data = response.body;
-    decoded = jsonDecode(data);
-  } else {
-    decoded = [];
-  }
-  return decoded;
+	var url = Uri.parse("$HOST/api/livraisons?date=$date&user=$user");
+	try {
+		http.Response response = await http.get(url);
+		var decoded = [];
+		if (response.statusCode == 200) {
+		String data = response.body;
+		decoded = jsonDecode(data);
+		} else {
+		decoded = [];
+		}
+		return decoded;
+	}
+	on http.ClientException{
+		return [];
+	}
 }
 
 Future<dynamic> getUrl(String image) async {
-    Uri url = Uri.parse("$HOST/api/image");
-    http.Response response = await http.post(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8'
-        },
-        body: jsonEncode(<String, dynamic>{
-			'image': image,
-			'filename': 'mouvement.jpeg'
-        })
-    );
-    return jsonDecode(response.body);
-  }
+Uri url = Uri.parse("$HOST/api/image");
+	try{
+		http.Response response = await http.post(
+			url,
+			headers: <String, String>{
+			  'Content-Type': 'application/json; charset=UTF-8'
+			},
+			body: jsonEncode(<String, dynamic>{
+				'image': image,
+				'filename': 'mouvement.jpeg'
+			})
+		);
+		return jsonDecode(response.body);
+	}
+	on http.ClientException{
+		return jsonDecode(http.Response("{\"message\": \"Pas de connexion internet\"}", 404).body);
+	}
+	on FormatException{
+		return jsonDecode(http.Response("{\"message\": \"Pas de connexion internet\"}", 404).body);
+	}
+}
 
 Future<bool> isUser(String _n_9032, String _n_9064) async {
-  var CODE = "JK9X80L4RT";
-  var url = Uri.parse(
-      "$HOST/api/list?code=$CODE&_n_9032=$_n_9032&_n_9064=$_n_9064");
-  http.Response response = await http.get(url);
-  if (response.statusCode == 200) {
-    return true;
+	await dotenv.load(fileName: ".env");
+  String code = dotenv.env["CODE"].toString();
+  var url = Uri.parse("$HOST/api/list");
+  try{
+	  http.Response response = await http.get(url,
+			headers: {"x-api-key": code,
+				"Authorization": "$_n_9032:$_n_9064"}
+		).timeout(Duration(seconds: 30), onTimeout: (){
+		  return http.Response("No connection", 404);
+	  });
+	  if (response.statusCode == 200) {
+			return true;
+	  }
+	  return false;
   }
-  return false;
+  on http.ClientException{
+  	return false;
+  }
 }

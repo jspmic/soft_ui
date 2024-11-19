@@ -56,7 +56,7 @@ class _Screen2State extends State<Screen2> {
           dividerColor: Colors.lightGreen,
         )
       ),
-      title: "Program",
+      title: "Soft",
       home: Scaffold(
         backgroundColor: background,
         appBar: AppBar(
@@ -71,7 +71,7 @@ class _Screen2State extends State<Screen2> {
                       fieldColor = changeTheme ? Colors.grey[300] : Colors.black;
                       changeTheme = !changeTheme;
                     });}, icon: Icon(background == Colors.white ? Icons.dark_mode_outlined
-                      : Icons.light_mode,)),
+                      : Icons.light_mode, color: Colors.black)),
                   IconButton(onPressed: (){
                     Navigator.pushNamed(context, '/movements',
                       arguments: movements.ScreenTransition(objlivraison: objLivraison,
@@ -81,10 +81,10 @@ class _Screen2State extends State<Screen2> {
                         changeThemes: changeTheme
                       )
                     );
-                  }, icon: Icon(Icons.emoji_transportation, color: Colors.black)
+                  }, icon: Icon(Icons.person_2, color: Colors.black)
                   ),
                   IconButton(onPressed: (){
-                              Navigator.pushNamed(context, '/');
+                              Navigator.pop(context);
                             }, icon: Icon(Icons.logout, color: Colors.black)
                   ),
                 ],
@@ -97,10 +97,10 @@ class _Screen2State extends State<Screen2> {
               child:
                 Column(
                     children: [
-                      SizedBox(height: 15),
+					  SizedBox(height: MediaQuery.of(context).size.height/10),
                       DatePicker(),
                       Container(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(5),
                           margin: const EdgeInsets.all(20),
                           child:
                           Column(
@@ -116,7 +116,6 @@ class _Screen2State extends State<Screen2> {
                                 style: TextStyle(color: textColor, fontSize: 15),
                                 controller: plaque,
                                 decoration: InputDecoration(
-
                                   hintText: "Plaque...",
                                 ),
                               ),
@@ -150,10 +149,15 @@ class _Screen2State extends State<Screen2> {
                             objLivraison.plaque = plaque.text;
                             objLivraison.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
                             objLivraison.logistic_official = logistic_official.text;
+							objLivraison.boucle = {};
                             objLivraison.numero_mouvement = numero_mvt.text;
+							List<Widget> boucleFromScreen2 = [];
+							count = 0;
+							oneBoucle = [];
                             Navigator.pushNamed(context, "/livraison",
                                 arguments: livraison.ScreenTransition(backgroundColor: background, fieldColor: fieldColor,
-                                  objlivraison: objLivraison
+                                  objlivraison: objLivraison,
+								  boucleFromScreen2: boucleFromScreen2
                                 )
                             );
                           },
@@ -165,6 +169,7 @@ class _Screen2State extends State<Screen2> {
                             objTransfert.logistic_official = logistic_official.text;
                             objTransfert.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
                             objTransfert.numero_mouvement = numero_mvt.text;
+							objTransfert.stock_central_suivants = {};
                             Navigator.pushNamed(context, "/transfert",
                               arguments: transfert.ScreenTransition(backgroundColor: background,
                                 fieldcolor: fieldColor,
