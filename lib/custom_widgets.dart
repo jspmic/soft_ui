@@ -30,7 +30,7 @@ void list(int column, {String? district}) async{
 }
 
 void initialize({String? district}){
-  if (district != null){
+  if (district != null && !(cache2.containsKey(district))){
     list(DISTRICT+5, district: district);
     return;
   }
@@ -98,10 +98,10 @@ class _StockState extends State<Stock> {
   @override
   void initState(){
     _hintCopy = widget.hintText;
-    super.initState();
-    if (widget.district != null){
+    /*if (widget.district != null){
       list(DISTRICT+5, district: widget.district);
-	  }
+	  }*/
+    super.initState();
 	}
 
   @override

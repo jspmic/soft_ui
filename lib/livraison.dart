@@ -64,7 +64,6 @@ class _LivraisonScreenState extends State<LivraisonScreen> {
             Text("Logistic Official: ${objLivraison.logistic_official}"),
             Text("District: ${objLivraison.district}"),
             Text("Stock Central Depart: ${objLivraison.stock_central_depart}"),
-            Text("Utilisateur: ${objLivraison.user}"),
           ],
         )),
       ),
