@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:isolate';
-
 import 'package:flutter/material.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:soft/rest.dart';
