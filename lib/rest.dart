@@ -27,7 +27,6 @@ class Transfert{
     Map imageMvt = await getUrl(photo_mvt);
     Map imageJournal = await getUrl(photo_journal);
 	if (!imageMvt.containsKey("message") && !imageJournal.containsKey("message")){
-		print("Succeeded");
 		http.Response response = await http.post(
 			url,
 		  headers: <String, String>{
@@ -51,7 +50,6 @@ class Transfert{
 		return response;
 	  }
 	else{
-		print("Failed");
 		return http.Response("{\"message\": \"Pas de connexion\"}", 404);
 		}
 	}
@@ -78,7 +76,6 @@ class Livraison{
     Map imageJournal = await getUrl(photo_journal);
     Uri url = Uri.parse("$HOST/api/livraisons");
 	if (!imageMvt.containsKey("message") && !imageJournal.containsKey("message")){
-		print("Succeeded");
 		http.Response response = await http.post(
 			url,
 			headers: <String, String>{
@@ -103,7 +100,6 @@ class Livraison{
 		return response;
 	}
 	else{
-		print("Failed");
 		return http.Response("{\"message\": \"Pas de connexion\"}", 404);
 	}
   }
