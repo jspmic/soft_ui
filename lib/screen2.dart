@@ -149,15 +149,15 @@ class _Screen2State extends State<Screen2> {
                             objLivraison.plaque = plaque.text;
                             objLivraison.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
                             objLivraison.logistic_official = logistic_official.text;
-							objLivraison.boucle = {};
+                            objLivraison.boucle = {};
                             objLivraison.numero_mouvement = numero_mvt.text;
-							List<Widget> boucleFromScreen2 = [];
-							count = 0;
-							oneBoucle = [];
+                            List<Widget> boucleFromScreen2 = [];
+                            count = 0;
+                            oneBoucle = [];
                             Navigator.pushNamed(context, "/livraison",
                                 arguments: livraison.ScreenTransition(backgroundColor: background, fieldColor: fieldColor,
                                   objlivraison: objLivraison,
-								  boucleFromScreen2: boucleFromScreen2
+                                    boucleFromScreen2: boucleFromScreen2
                                 )
                             );
                           },
