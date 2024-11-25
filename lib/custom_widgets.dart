@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:soft/excel_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:soft/screen2.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
 
@@ -9,6 +11,37 @@ Map<String?, Iterable<String?>> cache2 = {};
 
 DateTime? dateSelected;
 bool collineDisponible = false;
+
+Future<String> _getDst() async {
+  final directory = await getApplicationDocumentsDirectory();
+
+  // Create the parent directory if it doesn't exist
+  if (!await directory.exists()) {
+    await directory.create(recursive: true);
+  }
+
+  return directory.path;
+}
+
+Future<File> _localFile(String fileName) async {
+  final path = await _getDst();
+  return File('$path/$fileName');
+}
+
+Future<String> readCounter(String fileName) async {
+  final file = await _localFile(fileName);
+
+  // Read the file
+  return file.readAsString();
+}
+
+Future<File> writeCounter(String fileName, String content) async {
+  final file = await _localFile(fileName);
+
+  // Write the file
+  return file.writeAsString(content, mode: FileMode.append);
+}
+
 
 // Function to capitalize a string
 String capitalize(String string){

@@ -3,7 +3,12 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // Address definition
-const String HOST = "https://jspemic.pythonanywhere.com";
+String? HOST;
+
+init() async{
+	await dotenv.load(fileName: ".env");
+	HOST = dotenv.env["HOST"].toString();
+}
 // const String HOST = "http://192.168.43.81:5000";
 
 
@@ -24,10 +29,8 @@ class Transfert{
 
   Future<http.Response> postMe() async{
     Uri url = Uri.parse("$HOST/api/transferts");
-    Map imageMvt = await getUrl(photo_mvt);
-    Map imageJournal = await getUrl(photo_journal);
-	if (!imageMvt.containsKey("message") && !imageJournal.containsKey("message")){
-		print("Succeeded");
+    Map images = await getUrl(photo_mvt, photo_journal);
+	if (!images.containsKey("message")){
 		http.Response response = await http.post(
 			url,
 		  headers: <String, String>{
@@ -41,8 +44,8 @@ class Transfert{
 			'stock_central_depart': stock_central_depart,
 			'stock_central_suivants': jsonEncode(stock_central_suivants),
 			'stock_central_retour': stock_central_retour,
-			'photo_mvt': imageMvt != {} ? imageMvt["url"] : "",
-			'photo_journal': imageJournal != {} ? imageJournal["url"] : "",
+			'photo_mvt': images["image1"],
+			'photo_journal': images["image2"],
 			'type_transport': type_transport,
 			'user': user,
 			'motif': motif
@@ -51,7 +54,6 @@ class Transfert{
 		return response;
 	  }
 	else{
-		print("Failed");
 		return http.Response("{\"message\": \"Pas de connexion\"}", 404);
 		}
 	}
@@ -74,11 +76,9 @@ class Livraison{
   Livraison();
 
   Future<http.Response> postMe() async{
-    Map imageMvt = await getUrl(photo_mvt);
-    Map imageJournal = await getUrl(photo_journal);
+    Map images = await getUrl(photo_mvt, photo_journal);
     Uri url = Uri.parse("$HOST/api/livraisons");
-	if (!imageMvt.containsKey("message") && !imageJournal.containsKey("message")){
-		print("Succeeded");
+	if (!images.containsKey("message")){
 		http.Response response = await http.post(
 			url,
 			headers: <String, String>{
@@ -93,8 +93,8 @@ class Livraison{
 			  'stock_central_depart': stock_central_depart,
 			  'boucle': jsonEncode(boucle),
 			  'stock_central_retour': stock_central_retour,
-			  'photo_mvt': imageMvt != {} ? imageMvt["url"] : "",
-			  'photo_journal': imageJournal != {} ? imageJournal["url"] : "",
+			  'photo_mvt': images["image1"],
+			  'photo_journal': images["image2"],
 			  'type_transport': type_transport,
 			  'user': user,
 			  'motif': motif
@@ -103,7 +103,6 @@ class Livraison{
 		return response;
 	}
 	else{
-		print("Failed");
 		return http.Response("{\"message\": \"Pas de connexion\"}", 404);
 	}
   }
@@ -148,7 +147,7 @@ Future<List> getLivraison(String date, String user) async {
 	}
 }
 
-Future<dynamic> getUrl(String image) async {
+Future<dynamic> getUrl(String image1, String image2) async {
 Uri url = Uri.parse("$HOST/api/image");
 	try{
 		http.Response response = await http.post(
@@ -157,17 +156,16 @@ Uri url = Uri.parse("$HOST/api/image");
 			  'Content-Type': 'application/json; charset=UTF-8'
 			},
 			body: jsonEncode(<String, dynamic>{
-				'image': image,
-				'filename': 'mouvement.jpeg'
+				'image1': image1,
+				'filename1': 'mouvement1.jpeg',
+				'image2': image2,
+				'filename2': 'mouvement2.jpeg'
 			})
 		);
 		return jsonDecode(response.body);
 	}
-	on http.ClientException{
-		return jsonDecode(http.Response("{\"message\": \"Pas de connexion internet\"}", 404).body);
-	}
-	on FormatException{
-		return jsonDecode(http.Response("{\"message\": \"Pas de connexion internet\"}", 404).body);
+	on Exception{
+		return jsonDecode(http.Response("{\"message\": \"Erreur du client\"}", 404).body);
 	}
 }
 
