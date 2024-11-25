@@ -3,7 +3,12 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // Address definition
-const String HOST = "https://jspemic.pythonanywhere.com";
+String? HOST;
+
+init() async{
+	await dotenv.load(fileName: ".env");
+	HOST = dotenv.env["HOST"].toString();
+}
 // const String HOST = "http://192.168.43.81:5000";
 
 
