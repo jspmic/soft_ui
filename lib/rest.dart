@@ -124,7 +124,7 @@ Future<List> getTransfert(String date, String user) async {
 		}
 		return decoded;
 	}
-	on http.ClientException{
+	on Exception{
 		return [];
 	}
 }
@@ -142,7 +142,7 @@ Future<List> getLivraison(String date, String user) async {
 		}
 		return decoded;
 	}
-	on http.ClientException{
+	on Exception{
 		return [];
 	}
 }
@@ -185,7 +185,7 @@ Future<bool> isUser(String _n_9032, String _n_9064) async {
 	  }
 	  return false;
   }
-  on http.ClientException{
+  on Exception{
   	return false;
   }
 }
