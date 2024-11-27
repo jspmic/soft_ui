@@ -192,8 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                         isLoading ? CircularProgressIndicator()
                             : ElevatedButton(onPressed: authenticate,
                           style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
-                          child: Text("Se connecter", style: TextStyle(color: Colors.black),),)
-          
+                          child: Text("Se connecter", style: TextStyle(color: Colors.black),),),
                   ]))),
           ),
         );
