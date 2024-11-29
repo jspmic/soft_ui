@@ -6,8 +6,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
 
-Map<int, Iterable<String?>> cache = {};
-Map<String?, Iterable<String?>> cache2 = {};
+Map<int, List> cache = {};
+Map<String?, List> cache2 = {};
 
 DateTime? dateSelected;
 bool collineDisponible = false;
@@ -140,8 +140,7 @@ class _StockState extends State<Stock> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(scrollDirection: Axis.horizontal,
-      child: DropdownButton<String?>(items: (widget.district != null ? cache2[widget.district] : cache[widget.column])
-          ?.map((choice){
+      child: DropdownButton<dynamic>(items: (widget.district != null ? cache2[widget.district] : cache[widget.column])?.map((choice){
         return DropdownMenuItem(value: choice, child: Text(choice.toString()));
       }).toList(), onChanged: (value){
         setState(() {
