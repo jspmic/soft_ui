@@ -25,7 +25,8 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     init();
-    initialize();
+	// Remove initialize(to be replaced with cache population in rest.dart
+    //initialize();
     super.initState();
   }
 
@@ -192,8 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                         isLoading ? CircularProgressIndicator()
                             : ElevatedButton(onPressed: authenticate,
                           style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
-                          child: Text("Se connecter", style: TextStyle(color: Colors.black),),)
-          
+                          child: Text("Se connecter", style: TextStyle(color: Colors.black),),),
                   ]))),
           ),
         );

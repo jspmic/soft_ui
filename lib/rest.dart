@@ -1,11 +1,14 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:soft/custom_widgets.dart';
+import 'package:soft/excel_fields.dart';
 
 // Address definition
 String? HOST;
 
 init() async{
+	cache[LIVRAISON_RETOUR] = ["Livraison", "Retour"];
 	await dotenv.load(fileName: ".env");
 	HOST = dotenv.env["HOST"].toString();
 }
@@ -124,7 +127,7 @@ Future<List> getTransfert(String date, String user) async {
 		}
 		return decoded;
 	}
-	on http.ClientException{
+	on Exception{
 		return [];
 	}
 }
@@ -142,7 +145,7 @@ Future<List> getLivraison(String date, String user) async {
 		}
 		return decoded;
 	}
-	on http.ClientException{
+	on Exception{
 		return [];
 	}
 }
@@ -181,11 +184,20 @@ Future<bool> isUser(String _n_9032, String _n_9064) async {
 		  return http.Response("No connection", 404);
 	  });
 	  if (response.statusCode == 200) {
+			// Add column retrieval code here
+			// The replacement for the initialize method lies here
+			Map<String, dynamic> fields = jsonDecode(response.body);
+			cache[DISTRICT] = fields["districts"]!;
+			cache[TYPE_TRANSPORT] = fields["type_transports"]!;
+			cache[STOCK_CENTRAL] = fields["stocks"]!;
+			cache[INPUT] = fields["inputs"]!;
+			cache[INPUT]?.sort();
+			cache[DISTRICT]?.sort();
 			return true;
 	  }
 	  return false;
   }
-  on http.ClientException{
+  on Exception{
   	return false;
   }
 }

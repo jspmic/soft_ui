@@ -6,42 +6,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
 
-Map<int, Iterable<String?>> cache = {};
-Map<String?, Iterable<String?>> cache2 = {};
+Map<int, List> cache = {};
+Map<String?, List> cache2 = {};
 
 DateTime? dateSelected;
 bool collineDisponible = false;
-
-Future<String> _getDst() async {
-  final directory = await getApplicationDocumentsDirectory();
-
-  // Create the parent directory if it doesn't exist
-  if (!await directory.exists()) {
-    await directory.create(recursive: true);
-  }
-
-  return directory.path;
-}
-
-Future<File> _localFile(String fileName) async {
-  final path = await _getDst();
-  return File('$path/$fileName');
-}
-
-Future<String> readCounter(String fileName) async {
-  final file = await _localFile(fileName);
-
-  // Read the file
-  return file.readAsString();
-}
-
-Future<File> writeCounter(String fileName, String content) async {
-  final file = await _localFile(fileName);
-
-  // Write the file
-  return file.writeAsString(content, mode: FileMode.append);
-}
-
 
 // Function to capitalize a string
 String capitalize(String string){
@@ -67,11 +36,6 @@ void initialize({String? district}){
     list(DISTRICT+5, district: district);
     return;
   }
-  list(STOCK_CENTRAL);
-  list(TYPE_TRANSPORT);
-  list(INPUT);
-  list(DISTRICT);
-  list(LIVRAISON_RETOUR);
 }
 
 // Custom DatePicker widget
@@ -140,8 +104,7 @@ class _StockState extends State<Stock> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(scrollDirection: Axis.horizontal,
-      child: DropdownButton<String?>(items: (widget.district != null ? cache2[widget.district] : cache[widget.column])
-          ?.map((choice){
+      child: DropdownButton<dynamic>(items: (widget.district != null ? cache2[widget.district] : cache[widget.column])?.map((choice){
         return DropdownMenuItem(value: choice, child: Text(choice.toString()));
       }).toList(), onChanged: (value){
         setState(() {
