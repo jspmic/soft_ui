@@ -107,8 +107,8 @@ class _LoginPageState extends State<LoginPage> {
       state = Colors.green;
       objTransfert.user = _uname;
       objLivraison.user = _uname;
-      //username.text = "";
-      //pssw.text = "";
+      username.text = "";
+      pssw.text = "";
       Navigator.pushNamed(context, '/second',
           arguments: screen2.ScreenTransition(backgroundColor: background, FieldColor: fieldColor,
               changeThemes: changeTheme, objtransfert: objTransfert, objlivraison: objLivraison

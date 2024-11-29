@@ -191,6 +191,8 @@ Future<bool> isUser(String _n_9032, String _n_9064) async {
 			cache[TYPE_TRANSPORT] = fields["type_transports"]!;
 			cache[STOCK_CENTRAL] = fields["stocks"]!;
 			cache[INPUT] = fields["inputs"]!;
+			cache[INPUT]?.sort();
+			cache[DISTRICT]?.sort();
 			return true;
 	  }
 	  return false;
