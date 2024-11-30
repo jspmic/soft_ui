@@ -145,7 +145,6 @@ class _Screen2State extends State<Screen2> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton(onPressed: (){
-                            initialize(district: objLivraison.district);
                             objLivraison.plaque = plaque.text;
                             objLivraison.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
                             objLivraison.logistic_official = logistic_official.text;
