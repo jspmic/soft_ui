@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:soft/excel_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:soft/screen2.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
 

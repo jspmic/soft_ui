@@ -1,9 +1,6 @@
-import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:soft/custom_widgets.dart';
-import 'package:soft/excel_fields.dart';
 import 'package:soft/rest.dart';
-import 'dart:convert';
 
 late Color? background;
 late Color? fieldColor;
