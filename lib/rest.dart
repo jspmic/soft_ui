@@ -195,6 +195,7 @@ Future<bool> isUser(String _n_9032, String _n_9064) async {
 				List decodeOutput = jsonDecode(collineDistrict);
 				cache2.containsKey(decodeOutput[1]) ? cache2[decodeOutput[1]]!.add(decodeOutput[0])
 					: cache2[decodeOutput[1]] = [decodeOutput[0]];
+				cache2[decodeOutput[1]]!.sort();
 			}
 			cache[INPUT]?.sort();
 			cache[DISTRICT]?.sort();
