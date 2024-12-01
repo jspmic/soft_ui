@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:soft/excel_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:soft/screen2.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
 
@@ -18,25 +16,25 @@ String capitalize(String string){
 }
 
 // Function to list all the contents of the specified column in the sheet
-void list(int column, {String? district}) async{
-  Worksheet workSheet = await Worksheet.fromAsset("assets/worksheet.xlsx");
-  if (district == null) {
-    cache[column] = workSheet.readColumn("Feuille 1", column);
-  }
-  else{
-    if (cache2.containsKey(district) == true){
-      return;
-    }
-    cache2[district] = workSheet.readColline("Feuille 1", district);
-  }
-}
-
-void initialize({String? district}){
-  if (district != null && !(cache2.containsKey(district))){
-    list(DISTRICT+5, district: district);
-    return;
-  }
-}
+// void list(int column, {String? district}) async{
+//   Worksheet workSheet = await Worksheet.fromAsset("assets/worksheet.xlsx");
+//   if (district == null) {
+//     cache[column] = workSheet.readColumn("Feuille 1", column);
+//   }
+//   else{
+//     if (cache2.containsKey(district) == true){
+//       return;
+//     }
+//     cache2[district] = workSheet.readColline("Feuille 1", district);
+//   }
+// }
+// 
+// void initialize({String? district}){
+//   if (district != null && !(cache2.containsKey(district))){
+//     list(DISTRICT+5, district: district);
+//     return;
+//   }
+// }
 
 // Custom DatePicker widget
 class DatePicker extends StatefulWidget {

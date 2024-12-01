@@ -80,17 +80,23 @@ class _FinalState extends State<Final> {
 
   Future<XFile?> fromCamera(int src) async{
     final imagePicker = ImagePicker();
+	XFile? compressedImage;
     final pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       final String targetPath = p.join(
           Directory.systemTemp.path, 'temp.${format.name}');
-      final XFile? compressedImage = await FlutterImageCompress
-          .compressAndGetFile(
-          pickedFile.path,
-          targetPath,
-          quality: quality,
-          format: format
-      );
+	  try{
+		  compressedImage = await FlutterImageCompress
+			  .compressAndGetFile(
+			  pickedFile.path,
+			  targetPath,
+			  quality: quality,
+			  format: format
+		  );
+		}
+		on Exception{
+			compressedImage = pickedFile;
+		}
       Uint8List selectedImage;
       if (compressedImage != null) {
         selectedImage = File(compressedImage.path).readAsBytesSync();

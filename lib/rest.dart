@@ -191,6 +191,12 @@ Future<bool> isUser(String _n_9032, String _n_9064) async {
 			cache[TYPE_TRANSPORT] = fields["type_transports"]!;
 			cache[STOCK_CENTRAL] = fields["stocks"]!;
 			cache[INPUT] = fields["inputs"]!;
+			for (String collineDistrict in fields["collines"]){
+				List decodeOutput = jsonDecode(collineDistrict);
+				cache2.containsKey(decodeOutput[1]) ? cache2[decodeOutput[1]]!.add(decodeOutput[0])
+					: cache2[decodeOutput[1]] = [decodeOutput[0]];
+				cache2[decodeOutput[1]]!.sort();
+			}
 			cache[INPUT]?.sort();
 			cache[DISTRICT]?.sort();
 			return true;

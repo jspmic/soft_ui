@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:soft/custom_widgets.dart';
 import 'package:soft/rest.dart';
 import 'package:crypto/crypto.dart';
 import 'package:soft/screen2.dart' as screen2;
