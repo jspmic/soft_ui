@@ -40,8 +40,7 @@ class _LivraisonScreenState extends State<LivraisonScreen> {
       title: "Soft",
       home: Scaffold(
         backgroundColor: background,
-        appBar: AppBar(title: const Text("Livraison", style: TextStyle(color: Colors.black),),
-          centerTitle: true,
+        appBar: AppBar(title: BackButton(onPressed: () => Navigator.pop(context), style: ElevatedButton.styleFrom(iconColor: background)),
           backgroundColor: Colors.lightGreen,
         ),
         body: SingleChildScrollView(child: Column(
