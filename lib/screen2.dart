@@ -61,8 +61,23 @@ class _Screen2State extends State<Screen2> {
     if (value == null || value.isEmpty){
       return "Champ obligatoire";
     }
-    if (value.length != 6){
+    RegExp pattern = RegExp(r"[A-Z][0-9]{4}[A-Z]");
+    if (value.length != 6 || !(pattern.hasMatch(value))){
       return "Plaque invalide";
+    }
+    return null;
+  }
+  String? _validateNumeroMvt(String? value){
+    if (value == null || value.isEmpty){
+      return "Champ obligatoire";
+    }
+    RegExp pattern = RegExp(r"[a-zA-Z]+");
+    RegExp pattern2 = RegExp(r"\W+");
+    print(value);
+    print(pattern.hasMatch(value));
+    print(pattern2.hasMatch(value));
+    if (pattern.hasMatch(value) || pattern2.hasMatch(value)){
+      return "Numero invalide";
     }
     return null;
   }
@@ -156,11 +171,10 @@ class _Screen2State extends State<Screen2> {
                                   ),
                                   controller: numero_mvt,
                                   style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
-                                  validator: (value) => _validateField(value),
+                                  validator: (value) => _validateNumeroMvt(value),
                                 ),
                               ],
                             ))),
-                            SizedBox(height: MediaQuery.of(context).size.height/50),
                               Stock(hintText: "District (Si necessaire...)", column: DISTRICT, background: background,
                                   onSelect: (value){
                                     setState(() {
