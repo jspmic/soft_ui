@@ -39,10 +39,33 @@ class Screen2 extends StatefulWidget {
 }
 
 class _Screen2State extends State<Screen2> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final logistic_official = TextEditingController();
   final plaque = TextEditingController();
   final numero_mvt = TextEditingController();
-  //final _uname = TextEditingController();
+
+  bool mandatoryVerificator(TextEditingController plaque){
+    if (_formKey.currentState!.validate() && plaque.text.length == 6){
+      _formKey.currentState?.save();
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  String? _validateField(String? value){
+    return value == null || value.isEmpty ? "Champ obligatoire" : null;
+  }
+  String? _validatePlaque(String? value){
+    if (value == null || value.isEmpty){
+      return "Champ obligatoire";
+    }
+    if (value.length != 6){
+      return "Plaque invalide";
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,36 +125,49 @@ class _Screen2State extends State<Screen2> {
                       Container(
                           padding: const EdgeInsets.all(5),
                           margin: const EdgeInsets.all(20),
-                          child:
-                          Column(
-                            children: [
-                              TextField(
-                                style: TextStyle(color: textColor, fontSize: 15),
-                                controller: logistic_official,
-                                decoration: InputDecoration(
-                                  hintText: "Nom du Logistic official...",
+                          child: Column(children: [
+                            Form(key: _formKey, child: Padding(padding: EdgeInsets.all(16.0), child:
+                            Column(
+                              children: [
+                                TextFormField(
+                                  decoration: InputDecoration(
+                                    labelText: "Logistic official...",
+                                    labelStyle: TextStyle(color: background == Colors.white ? Colors.black : Colors.white, fontSize: 12),
+                                  ),
+                                  controller: logistic_official,
+                                  style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
+                                  validator: (value) => _validateField(value),
                                 ),
-                              ),
-                              TextField(
-                                style: TextStyle(color: textColor, fontSize: 15),
-                                controller: plaque,
-                                decoration: InputDecoration(
-                                  hintText: "Plaque...",
+                                SizedBox(height: MediaQuery.of(context).size.height/50),
+                                TextFormField(
+                                  decoration: InputDecoration(
+                                      labelText: "Plaque...",
+                                      labelStyle: TextStyle(color: background == Colors.white ? Colors.black : Colors.white, fontSize: 12)
+                                  ),
+                                  controller: plaque,
+                                  style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
+                                  validator: (value) => _validatePlaque(value),
                                 ),
-                              ),
-                              TextField(
-                                style: TextStyle(fontSize: 15),
-                                controller: numero_mvt,
-                                decoration: InputDecoration(
-                                  hintText: "Numero du mouvement...",
+                                SizedBox(height: MediaQuery.of(context).size.height/50),
+                                TextFormField(
+                                  decoration: InputDecoration(
+                                      labelText: "Numero du mouvement...",
+                                      labelStyle: TextStyle(color: background == Colors.white ? Colors.black : Colors.white, fontSize: 12)
+                                  ),
+                                  controller: numero_mvt,
+                                  style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
+                                  validator: (value) => _validateField(value),
                                 ),
-                              ),
+                              ],
+                            ))),
+                            SizedBox(height: MediaQuery.of(context).size.height/50),
                               Stock(hintText: "District (Si necessaire...)", column: DISTRICT, background: background,
                                   onSelect: (value){
                                     setState(() {
                                       objLivraison.district = value;
                                     });
                                   }),
+                            SizedBox(height: MediaQuery.of(context).size.height/50),
                               Stock(hintText: "Stock Central Depart", column: STOCK_CENTRAL, background: background,
                               onSelect: (value){
                                 objTransfert.stock_central_depart = value;
@@ -145,6 +181,9 @@ class _Screen2State extends State<Screen2> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton(onPressed: (){
+                            if (!mandatoryVerificator(plaque)){
+                              return;
+                            }
                             objLivraison.plaque = plaque.text;
                             objLivraison.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
                             objLivraison.logistic_official = logistic_official.text;
@@ -164,6 +203,9 @@ class _Screen2State extends State<Screen2> {
                             child: Text("Livraison", style: TextStyle(color: Colors.black)),
                           ),
                           ElevatedButton(onPressed: (){
+                            if (!mandatoryVerificator(plaque)){
+                              return;
+                            }
                             objTransfert.plaque = plaque.text;
                             objTransfert.logistic_official = logistic_official.text;
                             objTransfert.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
