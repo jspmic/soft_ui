@@ -206,6 +206,7 @@ class _Screen2State extends State<Screen2> {
                             List<Widget> boucleFromScreen2 = [];
                             count = 0;
                             oneBoucle = [];
+							numero_mvt.text = "";
                             Navigator.pushNamed(context, "/livraison",
                                 arguments: livraison.ScreenTransition(backgroundColor: background, fieldColor: fieldColor,
                                   objlivraison: objLivraison,
@@ -225,6 +226,7 @@ class _Screen2State extends State<Screen2> {
                             objTransfert.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
                             objTransfert.numero_mouvement = numero_mvt.text;
 							objTransfert.stock_central_suivants = {};
+							numero_mvt.text = "";
                             Navigator.pushNamed(context, "/transfert",
                               arguments: transfert.ScreenTransition(backgroundColor: background,
                                 fieldcolor: fieldColor,
