@@ -39,6 +39,7 @@ class Final extends StatefulWidget {
 
 class _FinalState extends State<Final> {
   Uint8List? _image;
+  Color? mssgColor = background; // default status color is the background's color for stale
   Uint8List? _journal;
   int quality = 50;
   CompressFormat format=CompressFormat.jpeg;
@@ -177,11 +178,13 @@ class _FinalState extends State<Final> {
 
     if (isValidRequest!.statusCode < 400) {
       setState(() {
+		mssgColor = Colors.green;
         mssg = "Success!";
       });
     }
     else {
       setState(() {
+		mssgColor = Colors.red;
         mssg = "Echec!";
       });
     }
@@ -286,8 +289,15 @@ class _FinalState extends State<Final> {
                     : ElevatedButton(onPressed: (){
                   objLivraison?.motif = motif.text;
                   objtransf?.motif = motif.text;
-                  String imageB64 = base64Encode(_image!.toList());
-                  String journalB64 = base64Encode(_journal!.toList());
+				  if (_image == null && _journal == null){
+					  setState(() {
+						mssgColor = Colors.red;
+						mssg = "Ajouter au moins une photo";
+					  });
+					  return;
+				  }
+                  String imageB64 = _image != null ? base64Encode(_image!.toList()) : "";
+                  String journalB64 = _journal != null ? base64Encode(_journal!.toList()) : "";
                   objtransf?.photo_mvt = imageB64;
                   objtransf?.photo_journal = journalB64;
                   objLivraison?.photo_mvt = imageB64;
@@ -297,7 +307,7 @@ class _FinalState extends State<Final> {
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen), child: Text("Enregistrer",
                         style: TextStyle(color: Colors.black))),
                     SizedBox(height: 10),
-                    Text(mssg, style: TextStyle(color: mssg.startsWith('E') ? Colors.red : Colors.green),)
+                    Text(mssg, style: TextStyle(color: mssgColor))
                   ]
     )
             ))
