@@ -184,8 +184,6 @@ Future<bool> isUser(String _n_9032, String _n_9064) async {
 		  return http.Response("No connection", 404);
 	  });
 	  if (response.statusCode == 200) {
-			// Add column retrieval code here
-			// The replacement for the initialize method lies here
 			Map<String, dynamic> fields = jsonDecode(response.body);
 			cache[DISTRICT] = fields["districts"]!;
 			cache[TYPE_TRANSPORT] = fields["type_transports"]!;
