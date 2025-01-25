@@ -8,18 +8,12 @@ import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
 import 'package:soft/final_page.dart' as final_page;
 
-// Determines automatically the mode of the device(light or dark)
-// This is used to determine the starting theme of the app
-final Brightness brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
-final isDarkMode = brightness == Brightness.dark;
-
-// Determines the background color depending on the device mode
-// This background will be used to determine the theme of the app automatically
-Color? background = isDarkMode ? Colors.grey[900] : Colors.white;
-
-// This boolean variable will be used to change theme inside the app temporarily
-// It is needed when the startup theme is not appropriate in given conditions(sun, ...)
-bool changeTheme = isDarkMode ? false : true;
+// These will be defined later depending on the context we're in
+// background: will contain the startup background depending on the device's theme
+// changeTheme: will determine the boolean value,
+// that represents whether to change the theme to dark or light
+late Color? background;
+late bool changeTheme;
 
 void main() => runApp(const Login());
 
@@ -131,6 +125,19 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context){
+    // Determines automatically the mode of the device(light or dark)
+    // This is used to determine the starting theme of the app
+    Brightness brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
+    // Determines the background color depending on the device mode
+    // This background will be used to determine the theme of the app automatically
+    Color? background = isDarkMode ? Colors.grey[900] : Colors.white;
+
+    // This boolean variable will be used to change theme inside the app temporarily
+    // It is needed when the startup theme is not appropriate in given conditions(sun, ...)
+    bool changeTheme = isDarkMode ? false : true;
+
       return SizedBox(
             width: double.infinity,
             height: double.infinity,
