@@ -8,8 +8,18 @@ import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
 import 'package:soft/final_page.dart' as final_page;
 
-// Constants section
-Color? background = Colors.grey[900];
+// Determines automatically the mode of the device(light or dark)
+// This is used to determine the starting theme of the app
+final Brightness brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+final isDarkMode = brightness == Brightness.dark;
+
+// Determines the background color depending on the device mode
+// This background will be used to determine the theme of the app automatically
+Color? background = isDarkMode ? Colors.grey[900] : Colors.white;
+
+// This boolean variable will be used to change theme inside the app temporarily
+// It is needed when the startup theme is not appropriate in given conditions(sun, ...)
+bool changeTheme = isDarkMode ? false : true;
 
 void main() => runApp(const Login());
 
@@ -68,7 +78,6 @@ class _LoginPageState extends State<LoginPage> {
   bool passwordVisible = false;
 
   Color? fieldColor = Colors.grey[300];
-  bool changeTheme = false;
 
   bool isLoading = false;
   bool isaUser = false;
