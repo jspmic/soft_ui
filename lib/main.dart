@@ -13,8 +13,8 @@ import 'package:soft/final_page.dart' as final_page;
 // background: will contain the startup background depending on the device's theme
 // changeTheme: will determine the boolean value,
 // that represents whether to change the theme to dark or light
-late Color? background;
-late bool changeTheme;
+Color? background = Colors.grey[900];
+bool changeTheme = false;
 
 // Function that returns the Color depending on the device's theme
 Color? getDeviceTheme(BuildContext context){
