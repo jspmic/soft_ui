@@ -138,7 +138,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context){
       background = getDeviceTheme(context);
-      state = background == Colors.white ? Colors.black : Colors.white;
       return SizedBox(
             width: double.infinity,
             height: double.infinity,
