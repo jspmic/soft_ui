@@ -11,8 +11,8 @@ init() async{
 	cache[LIVRAISON_RETOUR] = ["Livraison", "Retour"];
 	await dotenv.load(fileName: ".env");
 	HOST = dotenv.env["HOST"].toString();
+	print(HOST);
 }
-// const String HOST = "http://192.168.43.81:5000";
 
 
 class Transfert{
@@ -184,8 +184,6 @@ Future<bool> isUser(String _n_9032, String _n_9064) async {
 		  return http.Response("No connection", 404);
 	  });
 	  if (response.statusCode == 200) {
-			// Add column retrieval code here
-			// The replacement for the initialize method lies here
 			Map<String, dynamic> fields = jsonDecode(response.body);
 			cache[DISTRICT] = fields["districts"]!;
 			cache[TYPE_TRANSPORT] = fields["type_transports"]!;
@@ -193,9 +191,11 @@ Future<bool> isUser(String _n_9032, String _n_9064) async {
 			cache[INPUT] = fields["inputs"]!;
 			for (String collineDistrict in fields["collines"]){
 				List decodeOutput = jsonDecode(collineDistrict);
+				// If cache contains district, add to the collines in district
+				// If not, add the first colline as a list with one element, the colline itself
 				cache2.containsKey(decodeOutput[1]) ? cache2[decodeOutput[1]]!.add(decodeOutput[0])
 					: cache2[decodeOutput[1]] = [decodeOutput[0]];
-				cache2[decodeOutput[1]]!.sort();
+				cache2[decodeOutput[1]]!.sort(); // sort the collines already in the district
 			}
 			cache[INPUT]?.sort();
 			cache[DISTRICT]?.sort();

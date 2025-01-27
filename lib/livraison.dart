@@ -61,6 +61,7 @@ class _LivraisonScreenState extends State<LivraisonScreen> {
             Text("Date: ${objLivraison.date}"),
             Text("Plaque: ${objLivraison.plaque}"),
             Text("Logistic Official: ${objLivraison.logistic_official}"),
+            Text("Numero du mouvement: ${objLivraison.numero_mouvement}"),
             Text("District: ${objLivraison.district}"),
             Text("Stock Central Depart: ${objLivraison.stock_central_depart}"),
           ],

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:soft/custom_widgets.dart';
 import 'package:soft/rest.dart';
 import 'package:crypto/crypto.dart';
 import 'package:soft/screen2.dart' as screen2;
@@ -8,8 +9,27 @@ import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
 import 'package:soft/final_page.dart' as final_page;
 
-// Constants section
+// These will be defined later depending on the context we're in
+// background: will contain the startup background depending on the device's theme
+// changeTheme: will determine the boolean value,
+// that represents whether to change the theme to dark or light
 Color? background = Colors.grey[900];
+bool changeTheme = false;
+
+// Function that returns the Color depending on the device's theme
+Color? getDeviceTheme(BuildContext context){
+  // Determines automatically the mode of the device(light or dark)
+  // This is used to determine the starting theme of the app
+  Brightness brightness = MediaQuery.of(context).platformBrightness;
+  bool isDarkMode = brightness == Brightness.dark;
+  // This boolean variable will be used to change theme inside the app temporarily
+  // It is needed when the startup theme is not appropriate in given conditions(sun, ...)
+  changeTheme = isDarkMode ? false : true;
+
+  // Determines the background color depending on the device mode
+  // This background will be used to determine the theme of the app automatically
+  return isDarkMode ? Colors.grey[900] : Colors.white;
+}
 
 void main() => runApp(const Login());
 
@@ -24,8 +44,6 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     init();
-	// Remove initialize(to be replaced with cache population in rest.dart
-    //initialize();
     super.initState();
   }
 
@@ -58,7 +76,6 @@ class LoginPage extends StatefulWidget{
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   String? _validateField(String? value){
     setState(() {
       state = Colors.red;
@@ -69,11 +86,9 @@ class _LoginPageState extends State<LoginPage> {
   bool passwordVisible = false;
 
   Color? fieldColor = Colors.grey[300];
-  bool changeTheme = false;
 
   bool isLoading = false;
-  bool isaUser = false;
-  Color state = Colors.white;
+  Color state = background == Colors.white ? Colors.black : Colors.white;
   String _uname = "";
   String _pssw = "";
 
@@ -97,7 +112,6 @@ class _LoginPageState extends State<LoginPage> {
     isLoading = true;
     String _hashed = sha256.convert(utf8.encode(_pssw)).toString();
     bool isValidUser = await isUser(_uname, _hashed);
-    //bool isValidUser = true;
     setState(() {
       isLoading = false;
     });
@@ -123,23 +137,11 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context){
+      background = getDeviceTheme(context);
       return SizedBox(
             width: double.infinity,
             height: double.infinity,
             child: Scaffold(
-              appBar: AppBar(title:  Align(
-                alignment: Alignment.topRight,
-                child: IconButton(onPressed: (){
-                  setState(() {
-                    background = changeTheme ? Colors.grey[900] : Colors.white;
-                    fieldColor = changeTheme ? Colors.grey[300] : Colors.black;
-                    state = background == Colors.white ? Colors.black : Colors.white;
-                    changeTheme = !changeTheme;
-                  });}, icon: Icon(background == Colors.white ? Icons.dark_mode_outlined
-                    : Icons.light_mode,), style: IconButton.styleFrom(
-                    backgroundColor: Colors.lightGreen)),),
-                backgroundColor: background,
-              ),
               resizeToAvoidBottomInset: true,
               backgroundColor: background,
               body: Container(
@@ -148,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: SingleChildScrollView(
                       child: Column(children: [
                     SizedBox(
-                      height: 20.0,
+                      height: MediaQuery.of(context).size.height/7,
                     ),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(20),
@@ -159,7 +161,6 @@ class _LoginPageState extends State<LoginPage> {
                       height: 25.0,
                     ),
                         Icon(Icons.circle_outlined, color: state),
-                        //Text(errormssg, style: TextStyle(color: Colors.red)),
                         SizedBox(height: 8),
                     Form(key: _formKey, child: Padding(padding: EdgeInsets.all(16.0), child:
                       Column(

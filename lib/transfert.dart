@@ -54,6 +54,7 @@ class _TransfertScreenState extends State<TransfertScreen> {
               Text("Date: ${objTransfert.date}"),
               Text("Plaque: ${objTransfert.plaque}"),
               Text("Logistic Official: ${objTransfert.logistic_official}"),
+              Text("Numero du mouvement: ${objTransfert.numero_mouvement}"),
               Text("Stock Central Depart: ${objTransfert.stock_central_depart}"),
             ],
           ),
