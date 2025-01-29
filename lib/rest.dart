@@ -32,8 +32,6 @@ class Transfert{
 
   Future<http.Response> postMe() async{
     Uri url = Uri.parse("$HOST/api/transferts");
-    Map images = await getUrl(photo_mvt, photo_journal);
-	if (!images.containsKey("message")){
 		http.Response response = await http.post(
 			url,
 		  headers: <String, String>{
@@ -47,18 +45,14 @@ class Transfert{
 			'stock_central_depart': stock_central_depart,
 			'stock_central_suivants': jsonEncode(stock_central_suivants),
 			'stock_central_retour': stock_central_retour,
-			'photo_mvt': images["image1"],
-			'photo_journal': images["image2"],
+			'photo_mvt': photo_mvt,
+			'photo_journal': photo_journal,
 			'type_transport': type_transport,
 			'user': user,
 			'motif': motif
 		  })
 		);
 		return response;
-	  }
-	else{
-		return http.Response("{\"message\": \"Pas de connexion\"}", 404);
-		}
 	}
 }
 
@@ -79,9 +73,7 @@ class Livraison{
   Livraison();
 
   Future<http.Response> postMe() async{
-    Map images = await getUrl(photo_mvt, photo_journal);
     Uri url = Uri.parse("$HOST/api/livraisons");
-	if (!images.containsKey("message")){
 		http.Response response = await http.post(
 			url,
 			headers: <String, String>{
@@ -96,20 +88,15 @@ class Livraison{
 			  'stock_central_depart': stock_central_depart,
 			  'boucle': jsonEncode(boucle),
 			  'stock_central_retour': stock_central_retour,
-			  'photo_mvt': images["image1"],
-			  'photo_journal': images["image2"],
+			  'photo_mvt': photo_mvt,
+			  'photo_journal': photo_journal,
 			  'type_transport': type_transport,
 			  'user': user,
 			  'motif': motif
 			})
 		).timeout(Duration(minutes: 1, seconds: 20));
 		return response;
-	}
-	else{
-		return http.Response("{\"message\": \"Pas de connexion\"}", 404);
-	}
   }
-
 }
 
 // GET methods session
