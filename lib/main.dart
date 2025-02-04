@@ -179,6 +179,11 @@ class _LoginPageState extends State<LoginPage> {
                           TextFormField(
                             decoration: InputDecoration(
                                 labelText: "Mot de passe",
+								suffixIcon: IconButton(onPressed: () {
+								setState(() {
+								  passwordVisible = !passwordVisible;
+								});
+								}, icon: Icon(passwordVisible ? Icons.visibility : Icons.visibility_off)),
                               labelStyle: TextStyle(color: background == Colors.white ? Colors.black : Colors.white, fontSize: 12)
                             ),
                             obscureText: !passwordVisible,
