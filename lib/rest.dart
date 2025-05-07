@@ -11,7 +11,6 @@ init() async{
 	cache[LIVRAISON_RETOUR] = ["Livraison", "Retour"];
 	await dotenv.load(fileName: ".env");
 	HOST = dotenv.env["HOST"].toString();
-	print(HOST);
 }
 
 

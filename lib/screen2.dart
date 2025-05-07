@@ -73,9 +73,6 @@ class _Screen2State extends State<Screen2> {
     }
     RegExp pattern = RegExp(r"[a-zA-Z]+");
     RegExp pattern2 = RegExp(r"\W+");
-    print(value);
-    print(pattern.hasMatch(value));
-    print(pattern2.hasMatch(value));
     if (pattern.hasMatch(value) || pattern2.hasMatch(value)){
       return "Numero invalide";
     }
