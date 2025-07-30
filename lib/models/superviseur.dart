@@ -9,12 +9,16 @@ class Superviseur {
 	String nom;
 	String nom_utilisateur;
 	String lot;
+	String? psswd;
 	Superviseur({
 	required this.nom_utilisateur,
 	required this.id,
 	required this.lot,
 	required this.nom
 	});
+	void setPassword(String pssw) {
+		psswd = pssw;
+	}
     factory Superviseur.fromJson(Map<String, dynamic> json) => Superviseur(
         id: json["id"],
         lot: json["lot"],
