@@ -1,6 +1,6 @@
-set(CMAKE_HOST_SYSTEM "Linux-6.8.11-amd64")
+set(CMAKE_HOST_SYSTEM "Linux-6.12.25-amd64")
 set(CMAKE_HOST_SYSTEM_NAME "Linux")
-set(CMAKE_HOST_SYSTEM_VERSION "6.8.11-amd64")
+set(CMAKE_HOST_SYSTEM_VERSION "6.12.25-amd64")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "x86_64")
 
 include("/home/jaspe/Android/Sdk/ndk/26.3.11579264/build/cmake/android.toolchain.cmake")
