@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:soft/rest.dart';
 import 'package:crypto/crypto.dart';
+import 'package:soft/models/superviseur.dart';
 import 'package:soft/screen2.dart' as screen2;
 import 'package:soft/movements.dart' as movements;
 import 'package:soft/transfert.dart' as transfert;
@@ -76,6 +77,12 @@ class LoginPage extends StatefulWidget{
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Superviseur s = Superviseur(
+  	nom_utilisateur: "",
+  	id: -1,
+  	lot: "",
+  	nom: ""
+  );
   String? _validateField(String? value){
     setState(() {
       state = Colors.red;
@@ -110,8 +117,13 @@ class _LoginPageState extends State<LoginPage> {
       state = Colors.blue;
     });
     isLoading = true;
-    String _hashed = sha256.convert(utf8.encode(_pssw)).toString();
-    bool isValidUser = await isUser(_uname, _hashed);
+
+	// Setting the typed values in the Superviseur s
+	s.nom_utilisateur = _uname;
+    String hashed = sha256.convert(utf8.encode(_pssw)).toString();
+	s.setPassword(hashed);
+
+    bool isValidUser = await isUser(s);
     setState(() {
       isLoading = false;
     });
