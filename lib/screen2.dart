@@ -1,33 +1,40 @@
-import 'package:soft/excel_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:soft/custom_widgets.dart';
+import 'package:soft/models/superviseur.dart';
 import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
 import 'package:soft/movements.dart' as movements;
 import 'package:soft/rest.dart';
+import 'package:soft/excel_fields.dart';
 
 
 late Color? background;
 late Color? fieldColor;
 late bool changeTheme;
 late Transfert objTransfert;
+late Superviseur superviseur;
 late Livraison objLivraison;
 
 class ScreenTransition{
-  late Color? backgroundColor;
-  late Color? FieldColor;
-  late bool changeThemes;
-  late Transfert objtransfert;
-  late Livraison objlivraison;
-  ScreenTransition({required this.backgroundColor, required this.FieldColor,
-    required this.changeThemes, required this.objtransfert,
-    required this.objlivraison
+  Color? backgroundColor;
+  Color? FieldColor;
+  bool changeThemes;
+  Transfert objtransfert;
+  Superviseur s;
+  Livraison objlivraison;
+  ScreenTransition({required this.backgroundColor,
+	  required this.FieldColor,
+	  required this.changeThemes,
+	  required this.objtransfert,
+	  required this.objlivraison,
+	  required this.s
   }){
     background = backgroundColor;
     fieldColor = FieldColor;
     changeTheme = changeThemes;
     objTransfert = objtransfert;
     objLivraison = objlivraison;
+	superviseur = s;
   }
 }
 
@@ -43,6 +50,7 @@ class _Screen2State extends State<Screen2> {
   final logistic_official = TextEditingController();
   final plaque = TextEditingController();
   final numero_mvt = TextEditingController();
+  final numero_journal = TextEditingController();
 
   bool mandatoryVerificator(TextEditingController plaque){
     if (_formKey.currentState!.validate() && plaque.text.length == 6){
@@ -79,9 +87,40 @@ class _Screen2State extends State<Screen2> {
     return null;
   }
 
+  void showDialog(BuildContext context, String? announcement,
+  {Color? backgroundColor}) async {
+  	await showGeneralDialog(context: context,
+		pageBuilder: (context, _, __) {
+			return AlertDialog(
+				backgroundColor: backgroundColor,
+				titleTextStyle: TextStyle(
+					color: backgroundColor == Colors.white ? Colors.black
+					: Colors.white,
+					fontWeight: FontWeight.bold,
+					fontStyle: FontStyle.italic
+				),
+				title: announcement == null ? Text("Aucune annonce n'est disponible") 
+				: Text("Annonce du collecteur"),
+				content: announcement == null ? Text("Revenez lors de votre prochaine sesssion")
+				: Text(announcement),
+				contentTextStyle: TextStyle(
+					color: backgroundColor == Colors.white ? Colors.black
+					: Colors.white
+				),
+				scrollable: true,
+				actions: [
+					TextButton(
+						onPressed: () => Navigator.pop(context),
+						child: Text("Compris!"),
+					)
+				],
+			);
+		}
+	);
+  }
+
   @override
   Widget build(BuildContext context) {
-    Color? textColor = (background == Colors.white ? Colors.black : Colors.white);
     return MaterialApp(
       theme: ThemeData(
         colorScheme: background == Colors.white ? const ColorScheme.light(primary: Colors.lightGreen)
@@ -94,6 +133,26 @@ class _Screen2State extends State<Screen2> {
       title: "Soft",
       home: Scaffold(
         backgroundColor: background,
+		floatingActionButton: FloatingActionButton(
+			onPressed: () {
+				if (superviseur.annonces.isNotEmpty) {
+					for (String annonce in superviseur.annonces) {
+						showDialog(context, annonce,
+							backgroundColor: background
+						);
+					}
+				}
+				else {
+					showDialog(context, null,
+						backgroundColor: background
+					);
+				}
+			},
+			mini: true,
+			child: superviseur.annonces.isEmpty ?
+			Icon(Icons.announcement_outlined)
+			: Icon(Icons.announcement, color: Colors.red),
+		),
         appBar: AppBar(
           title: Align(
             alignment: Alignment.topRight,
@@ -113,6 +172,7 @@ class _Screen2State extends State<Screen2> {
                         objtransfert: objTransfert,
                         backgroundColor: background,
                         FieldColor: fieldColor,
+						s: superviseur,
                         changeThemes: changeTheme
                       )
                     );
@@ -170,6 +230,15 @@ class _Screen2State extends State<Screen2> {
                                   style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
                                   validator: (value) => _validateNumeroMvt(value),
                                 ),
+                                TextFormField(
+                                  decoration: InputDecoration(
+                                      labelText: "Numero du journal du camion...",
+                                      labelStyle: TextStyle(color: background == Colors.white ? Colors.black : Colors.white, fontSize: 12)
+                                  ),
+                                  controller: numero_journal,
+                                  style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
+                                  validator: (value) => _validateNumeroMvt(value),
+                                ),
                               ],
                             ))),
                               Stock(hintText: "District (Si necessaire...)", column: DISTRICT, background: background,
@@ -200,14 +269,17 @@ class _Screen2State extends State<Screen2> {
                             objLivraison.logistic_official = logistic_official.text;
                             objLivraison.boucle = {};
                             objLivraison.numero_mouvement = numero_mvt.text;
+                            objLivraison.numero_journal = numero_journal.text;
                             List<Widget> boucleFromScreen2 = [];
                             count = 0;
                             oneBoucle = [];
 							numero_mvt.text = "";
+							numero_journal.text = "";
                             Navigator.pushNamed(context, "/livraison",
                                 arguments: livraison.ScreenTransition(backgroundColor: background, fieldColor: fieldColor,
                                   objlivraison: objLivraison,
-                                    boucleFromScreen2: boucleFromScreen2
+                                    boucleFromScreen2: boucleFromScreen2,
+									s: superviseur,
                                 )
                             );
                           },
@@ -222,11 +294,14 @@ class _Screen2State extends State<Screen2> {
                             objTransfert.logistic_official = logistic_official.text;
                             objTransfert.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
                             objTransfert.numero_mouvement = numero_mvt.text;
+                            objTransfert.numero_journal = numero_journal.text;
 							objTransfert.stock_central_suivants = {};
 							numero_mvt.text = "";
+							numero_journal.text = "";
                             Navigator.pushNamed(context, "/transfert",
                               arguments: transfert.ScreenTransition(backgroundColor: background,
                                 fieldcolor: fieldColor,
+                                s: superviseur,
                                 objtransf: objTransfert
                               )
                             );
