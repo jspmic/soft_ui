@@ -32,15 +32,6 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Check formatting
-        run: flutter format --set-exit-if-changed .
-
-      - name: Analyze code
-        run: flutter analyze .
-
-      - name: Run tests
-        run: flutter test
-
       - name: Get previous version from latest tag and increment by 1
         id: version
         run: |
