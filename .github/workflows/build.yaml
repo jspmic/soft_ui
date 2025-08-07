@@ -37,19 +37,6 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Get previous version from latest tag and increment by 1
-        id: version
-        run: |
-          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
-          if [[ $latest_tag =~ ([0-9]+)$ ]]; then
-            prev_version=${BASH_REMATCH[1]}
-            new_version=$((prev_version+1))
-          else
-            prev_version=0
-            new_version=1
-          fi
-          echo "soft_version=Soft${new_version}" >> $GITHUB_OUTPUT
-
       - name: Build APK
         run: flutter build apk
 
