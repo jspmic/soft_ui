@@ -268,3 +268,15 @@ class CardList extends StatelessWidget {
     );
   }
 }
+
+// Dynamic snackbar
+void popItUp(BuildContext context, String mssg) {
+	final snackBar = SnackBar(
+		content: Text(mssg),
+		action: SnackBarAction(
+			label: "Ok",
+			onPressed: (){}
+		)
+	);
+	ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
