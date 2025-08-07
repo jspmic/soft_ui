@@ -5,7 +5,7 @@ import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
 
 Map<int, List> cache = {};
-Map<String?, List> cache2 = {};
+Map<String, List> cache2 = {};
 
 DateTime? dateSelected;
 bool collineDisponible = false;
@@ -14,27 +14,6 @@ bool collineDisponible = false;
 String capitalize(String string){
   return string[0].toUpperCase() + string.substring(1, string.length);
 }
-
-// Function to list all the contents of the specified column in the sheet
-// void list(int column, {String? district}) async{
-//   Worksheet workSheet = await Worksheet.fromAsset("assets/worksheet.xlsx");
-//   if (district == null) {
-//     cache[column] = workSheet.readColumn("Feuille 1", column);
-//   }
-//   else{
-//     if (cache2.containsKey(district) == true){
-//       return;
-//     }
-//     cache2[district] = workSheet.readColline("Feuille 1", district);
-//   }
-// }
-// 
-// void initialize({String? district}){
-//   if (district != null && !(cache2.containsKey(district))){
-//     list(DISTRICT+5, district: district);
-//     return;
-//   }
-// }
 
 // Custom DatePicker widget
 class DatePicker extends StatefulWidget {
@@ -93,16 +72,14 @@ class _StockState extends State<Stock> {
   @override
   void initState(){
     _hintCopy = widget.hintText;
-    /*if (widget.district != null){
-      list(DISTRICT+5, district: widget.district);
-	  }*/
     super.initState();
 	}
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(scrollDirection: Axis.horizontal,
-      child: DropdownButton<dynamic>(items: (widget.district != null ? cache2[widget.district] : cache[widget.column])?.map((choice){
+      child: DropdownButton<dynamic>(items:
+	  (widget.district != null ? cache2[widget.district] : cache[widget.column])?.map((choice){
         return DropdownMenuItem(value: choice, child: Text(choice.toString()));
       }).toList(), onChanged: (value){
         setState(() {
@@ -290,4 +267,16 @@ class CardList extends StatelessWidget {
         )
     );
   }
+}
+
+// Dynamic snackbar
+void popItUp(BuildContext context, String mssg) {
+	final snackBar = SnackBar(
+		content: Text(mssg),
+		action: SnackBarAction(
+			label: "Ok",
+			onPressed: (){}
+		)
+	);
+	ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

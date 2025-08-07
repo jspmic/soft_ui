@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:soft/custom_widgets.dart';
+import 'package:soft/models/superviseur.dart';
 import 'package:soft/excel_fields.dart';
 
 // Address definition
@@ -19,13 +20,14 @@ class Transfert{
   late String plaque;
   late String logistic_official;
   late String numero_mouvement;
+  late String numero_journal;
   late String stock_central_depart;
   Map<String, String?> stock_central_suivants = {};
   late String stock_central_retour;
   String photo_mvt = "";
   String photo_journal = "";
   late String type_transport;
-  late String user;
+  late int user;
   late String? motif;
   Transfert();
 
@@ -41,6 +43,7 @@ class Transfert{
 			'plaque': plaque,
 			'logistic_official': logistic_official,
 			'numero_mouvement': numero_mouvement,
+			'numero_journal_du_camion': numero_journal,
 			'stock_central_depart': stock_central_depart,
 			'stock_central_suivants': jsonEncode(stock_central_suivants),
 			'stock_central_retour': stock_central_retour,
@@ -60,6 +63,7 @@ class Livraison{
   late String plaque;
   late String logistic_official;
   late String numero_mouvement;
+  late String numero_journal;
   late String district;
   late String stock_central_depart;
   late Map<String, Map<String, String>> boucle = {};
@@ -67,7 +71,7 @@ class Livraison{
   String photo_mvt = "";
   String photo_journal = "";
   late String type_transport;
-  late String user;
+  late int user;
   late String? motif;
   Livraison();
 
@@ -84,6 +88,7 @@ class Livraison{
 			  'district': district,
 			  'logistic_official': logistic_official,
 			  'numero_mouvement': numero_mouvement,
+			  'numero_journal_du_camion': numero_journal,
 			  'stock_central_depart': stock_central_depart,
 			  'boucle': jsonEncode(boucle),
 			  'stock_central_retour': stock_central_retour,
@@ -100,8 +105,8 @@ class Livraison{
 
 // GET methods session
 
-Future<List> getTransfert(String date, String user) async {
-	var url = Uri.parse("$HOST/api/transferts?date=$date&user=$user");
+Future<List> getTransfert(String date, Superviseur superviseur) async {
+	var url = Uri.parse("$HOST/api/transferts?date=$date&userId=${superviseur.id}");
 	try {
 		http.Response response = await http.get(url);
 		var decoded = [];
@@ -118,8 +123,8 @@ Future<List> getTransfert(String date, String user) async {
 	}
 }
 
-Future<List> getLivraison(String date, String user) async {
-	var url = Uri.parse("$HOST/api/livraisons?date=$date&user=$user");
+Future<List> getLivraison(String date, Superviseur superviseur) async {
+	var url = Uri.parse("$HOST/api/livraisons?date=$date&userId=${superviseur.id}");
 	try {
 		http.Response response = await http.get(url);
 		var decoded = [];
@@ -158,31 +163,27 @@ Uri url = Uri.parse("$HOST/api/image");
 	}
 }
 
-Future<bool> isUser(String _n_9032, String _n_9064) async {
+Future<bool> isUser(Superviseur superviseur) async {
 	await dotenv.load(fileName: ".env");
   String code = dotenv.env["CODE"].toString();
   var url = Uri.parse("$HOST/api/list");
   try{
 	  http.Response response = await http.get(url,
 			headers: {"x-api-key": code,
-				"Authorization": "$_n_9032:$_n_9064"}
+				"Authorization": "${superviseur.nom_utilisateur}:${superviseur.psswd}"}
 		).timeout(Duration(seconds: 30), onTimeout: (){
 		  return http.Response("No connection", 404);
 	  });
 	  if (response.statusCode == 200) {
 			Map<String, dynamic> fields = jsonDecode(response.body);
+			superviseur.id = fields["id"]!;
+			superviseur.nom = fields["nom"]!;
 			cache[DISTRICT] = fields["districts"]!;
 			cache[TYPE_TRANSPORT] = fields["type_transports"]!;
 			cache[STOCK_CENTRAL] = fields["stocks"]!;
 			cache[INPUT] = fields["inputs"]!;
-			for (String collineDistrict in fields["collines"]){
-				List decodeOutput = jsonDecode(collineDistrict);
-				// If cache contains district, add to the collines in district
-				// If not, add the first colline as a list with one element, the colline itself
-				cache2.containsKey(decodeOutput[1]) ? cache2[decodeOutput[1]]!.add(decodeOutput[0])
-					: cache2[decodeOutput[1]] = [decodeOutput[0]];
-				cache2[decodeOutput[1]]!.sort(); // sort the collines already in the district
-			}
+			Map<String, dynamic> tmp = jsonDecode(fields["collines"]);
+			cache2 = Map<String, List>.from(tmp);
 			cache[INPUT]?.sort();
 			cache[DISTRICT]?.sort();
 			return true;

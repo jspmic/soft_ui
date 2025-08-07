@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:soft/rest.dart';
 import 'package:crypto/crypto.dart';
+import 'package:soft/models/superviseur.dart';
 import 'package:soft/screen2.dart' as screen2;
 import 'package:soft/movements.dart' as movements;
 import 'package:soft/transfert.dart' as transfert;
@@ -76,6 +77,12 @@ class LoginPage extends StatefulWidget{
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Superviseur s = Superviseur(
+  	nom_utilisateur: "",
+  	id: -1,
+  	lot: "",
+  	nom: ""
+  );
   String? _validateField(String? value){
     setState(() {
       state = Colors.red;
@@ -110,30 +117,41 @@ class _LoginPageState extends State<LoginPage> {
       state = Colors.blue;
     });
     isLoading = true;
-    String _hashed = sha256.convert(utf8.encode(_pssw)).toString();
-    bool isValidUser = await isUser(_uname, _hashed);
+
+	// Setting the typed values in the Superviseur s
+	s.nom_utilisateur = _uname;
+    String hashed = sha256.convert(utf8.encode(_pssw)).toString();
+	s.setPassword(hashed);
+
+    bool isValidUser = await isUser(s);
     setState(() {
       isLoading = false;
     });
 
     if (mounted && isValidUser) {
       state = Colors.green;
-      objTransfert.user = _uname;
-      objLivraison.user = _uname;
+      objTransfert.user = s.id;
+      objLivraison.user = s.id;
       username.text = "";
       pssw.text = "";
       Navigator.pushNamed(context, '/second',
-          arguments: screen2.ScreenTransition(backgroundColor: background, FieldColor: fieldColor,
-              changeThemes: changeTheme, objtransfert: objTransfert, objlivraison: objLivraison
+          arguments: screen2.ScreenTransition(
+			  backgroundColor: background,
+			  FieldColor: fieldColor,
+              changeThemes: changeTheme,
+			  objtransfert: objTransfert,
+			  objlivraison: objLivraison,
+			  s: s
           )
       );
     }
-    else {
+    else if (mounted && !isValidUser) {
       setState(() {
         state = Colors.red;
       });
+	  popItUp(context, "Utilisateur non existant");
     }
-    }
+	}
 
   @override
   Widget build(BuildContext context){

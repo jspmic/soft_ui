@@ -1,33 +1,40 @@
-import 'package:soft/excel_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:soft/custom_widgets.dart';
+import 'package:soft/models/superviseur.dart';
 import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
 import 'package:soft/movements.dart' as movements;
 import 'package:soft/rest.dart';
+import 'package:soft/excel_fields.dart';
 
 
 late Color? background;
 late Color? fieldColor;
 late bool changeTheme;
 late Transfert objTransfert;
+late Superviseur superviseur;
 late Livraison objLivraison;
 
 class ScreenTransition{
-  late Color? backgroundColor;
-  late Color? FieldColor;
-  late bool changeThemes;
-  late Transfert objtransfert;
-  late Livraison objlivraison;
-  ScreenTransition({required this.backgroundColor, required this.FieldColor,
-    required this.changeThemes, required this.objtransfert,
-    required this.objlivraison
+  Color? backgroundColor;
+  Color? FieldColor;
+  bool changeThemes;
+  Transfert objtransfert;
+  Superviseur s;
+  Livraison objlivraison;
+  ScreenTransition({required this.backgroundColor,
+	  required this.FieldColor,
+	  required this.changeThemes,
+	  required this.objtransfert,
+	  required this.objlivraison,
+	  required this.s
   }){
     background = backgroundColor;
     fieldColor = FieldColor;
     changeTheme = changeThemes;
     objTransfert = objtransfert;
     objLivraison = objlivraison;
+	superviseur = s;
   }
 }
 
@@ -43,6 +50,7 @@ class _Screen2State extends State<Screen2> {
   final logistic_official = TextEditingController();
   final plaque = TextEditingController();
   final numero_mvt = TextEditingController();
+  final numero_journal = TextEditingController();
 
   bool mandatoryVerificator(TextEditingController plaque){
     if (_formKey.currentState!.validate() && plaque.text.length == 6){
@@ -81,7 +89,6 @@ class _Screen2State extends State<Screen2> {
 
   @override
   Widget build(BuildContext context) {
-    Color? textColor = (background == Colors.white ? Colors.black : Colors.white);
     return MaterialApp(
       theme: ThemeData(
         colorScheme: background == Colors.white ? const ColorScheme.light(primary: Colors.lightGreen)
@@ -113,6 +120,7 @@ class _Screen2State extends State<Screen2> {
                         objtransfert: objTransfert,
                         backgroundColor: background,
                         FieldColor: fieldColor,
+						s: superviseur,
                         changeThemes: changeTheme
                       )
                     );
@@ -170,6 +178,15 @@ class _Screen2State extends State<Screen2> {
                                   style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
                                   validator: (value) => _validateNumeroMvt(value),
                                 ),
+                                TextFormField(
+                                  decoration: InputDecoration(
+                                      labelText: "Numero du journal du camion...",
+                                      labelStyle: TextStyle(color: background == Colors.white ? Colors.black : Colors.white, fontSize: 12)
+                                  ),
+                                  controller: numero_journal,
+                                  style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
+                                  validator: (value) => _validateNumeroMvt(value),
+                                ),
                               ],
                             ))),
                               Stock(hintText: "District (Si necessaire...)", column: DISTRICT, background: background,
@@ -200,10 +217,12 @@ class _Screen2State extends State<Screen2> {
                             objLivraison.logistic_official = logistic_official.text;
                             objLivraison.boucle = {};
                             objLivraison.numero_mouvement = numero_mvt.text;
+                            objLivraison.numero_journal = numero_journal.text;
                             List<Widget> boucleFromScreen2 = [];
                             count = 0;
                             oneBoucle = [];
 							numero_mvt.text = "";
+							numero_journal.text = "";
                             Navigator.pushNamed(context, "/livraison",
                                 arguments: livraison.ScreenTransition(backgroundColor: background, fieldColor: fieldColor,
                                   objlivraison: objLivraison,
@@ -222,8 +241,10 @@ class _Screen2State extends State<Screen2> {
                             objTransfert.logistic_official = logistic_official.text;
                             objTransfert.date = "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
                             objTransfert.numero_mouvement = numero_mvt.text;
+                            objTransfert.numero_journal = numero_journal.text;
 							objTransfert.stock_central_suivants = {};
 							numero_mvt.text = "";
+							numero_journal.text = "";
                             Navigator.pushNamed(context, "/transfert",
                               arguments: transfert.ScreenTransition(backgroundColor: background,
                                 fieldcolor: fieldColor,
