@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:soft/rest.dart';
+import 'package:soft/models/superviseur.dart';
 
 late Color? background;
 late Color? fieldColor;
 late bool changeTheme;
 late Transfert? objTransfert;
+late Superviseur superviseur;
 late Livraison? objLivraison;
 
 class ScreenTransition{
   late Color? backgroundColor;
   late Color? FieldColor;
   late bool changeThemes;
+  late Superviseur s;
   late Transfert objtransfert;
   late Livraison objlivraison;
   ScreenTransition({required this.backgroundColor, required this.FieldColor,
     required this.changeThemes, required this.objtransfert,
-    required this.objlivraison
+    required this.objlivraison, required this.s
   }){
     background = backgroundColor;
     fieldColor = FieldColor;
     changeTheme = changeThemes;
     objTransfert = objtransfert;
     objLivraison = objlivraison;
+	superviseur = s;
   }
 }
 
@@ -40,19 +44,19 @@ class _MovementsState extends State<Movements> {
   bool isLoading = false;
   Map<String, dynamic> suivants = {};
 
-  void populateContent({required String program, required String date, String? user}) async {
+  void populateContent({required String program, required String date}) async {
     setState(() {
       isLoading = true;
     });
     if (program == "Transfert"){
-      var newContent = await getTransfert(date, user!);
+      var newContent = await getTransfert(date, superviseur);
       setState(() {
         isLoading = false;
         content = newContent;
       });
     }
     else{
-      var newContent = await getLivraison(date, user!);
+      var newContent = await getLivraison(date, superviseur);
       setState(() {
         isLoading = false;
         content = newContent;
@@ -120,7 +124,7 @@ class _MovementsState extends State<Movements> {
 				setState(() {
 				  String newDate = dateSelected == null ? "*" :
 				  "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}";
-				  populateContent(program: program.first, date: newDate, user: objTransfert == null ? objLivraison?.user : objTransfert?.user);
+				  populateContent(program: program.first, date: newDate);
 				});
 			  },
 				style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
