@@ -28,6 +28,11 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'beta'
+          
+      - name: Write secrets to .env file
+        run: |
+          echo "CODE=${{ secrets.CODE }}" >> assets/.env
+          echo "HOST=${{ secrets.HOST }}" >> assets/.env
 
       - name: Write secrets to .env file
         run: |
