@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:soft/models/superviseur.dart';
 import 'package:soft/rest.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:soft/final_page.dart' as final_page;
 
 late Color? Background;
 late Color? fieldColor;
+late Superviseur superviseur;
 late Transfert objTransfert;
 
 class ScreenTransition{
   late Color? backgroundColor;
   late Color? fieldcolor;
   late Transfert objtransf;
+  late Superviseur s;
+
   ScreenTransition({required this.backgroundColor,
-    required this.fieldcolor, required this.objtransf}){
+    required this.fieldcolor, required this.objtransf, required this.s}){
     Background = backgroundColor;
     fieldColor = fieldcolor;
     objTransfert = objtransf;
+	superviseur = s;
   }
 }
 
@@ -46,6 +51,7 @@ class _TransfertScreenState extends State<TransfertScreen> {
               ElevatedButton(onPressed: (){
                 Navigator.pushNamed(context, '/final',
                   arguments: final_page.ScreenTransition(backgroundColor: Background,
+					  s: superviseur,
                       fieldcolor: fieldColor, objectTransfert: objTransfert)
                 );
               },

@@ -106,12 +106,12 @@ class _LoginPageState extends State<LoginPage> {
   Livraison objLivraison = Livraison();
 
   void authenticate() async{
-    if (_formKey.currentState!.validate()){
-      _formKey.currentState?.save();
-    }
-    else{
-      return;
-    }
+    // if (_formKey.currentState!.validate()){
+    //   _formKey.currentState?.save();
+    // }
+    // else{
+      //return;
+    //}
     setState(() {
       isLoading = false;
       state = Colors.blue;
@@ -130,22 +130,28 @@ class _LoginPageState extends State<LoginPage> {
 
     if (mounted && isValidUser) {
       state = Colors.green;
-      objTransfert.user = _uname;
-      objLivraison.user = _uname;
+      objTransfert.user = s.id;
+      objLivraison.user = s.id;
       username.text = "";
       pssw.text = "";
       Navigator.pushNamed(context, '/second',
-          arguments: screen2.ScreenTransition(backgroundColor: background, FieldColor: fieldColor,
-              changeThemes: changeTheme, objtransfert: objTransfert, objlivraison: objLivraison
+          arguments: screen2.ScreenTransition(
+			  backgroundColor: background,
+			  FieldColor: fieldColor,
+              changeThemes: changeTheme,
+			  objtransfert: objTransfert,
+			  objlivraison: objLivraison,
+			  s: s
           )
       );
     }
-    else {
+    else if (mounted && !isValidUser) {
       setState(() {
         state = Colors.red;
       });
+	  popItUp(context, "Vérifier les informations saisies");
     }
-    }
+	}
 
   @override
   Widget build(BuildContext context){

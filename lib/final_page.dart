@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:soft/excel_fields.dart';
+import 'package:soft/models/superviseur.dart';
 import 'package:soft/rest.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,19 +15,22 @@ late Color? background;
 late Color? fieldColor;
 late Transfert? objtransf;
 late Livraison? objLivraison;
+late Superviseur superviseur;
 
 class ScreenTransition{
   late Color? backgroundColor;
   late Color? fieldcolor;
   late Transfert? objectTransfert;
   late Livraison? objectLivraison;
+  late Superviseur s;
 
   ScreenTransition({required this.backgroundColor, required this.fieldcolor,
-    this.objectTransfert, this.objectLivraison}){
+    this.objectTransfert, this.objectLivraison, required this.s}){
     background = backgroundColor;
     objtransf = objectTransfert;
     objLivraison = objectLivraison;
     fieldColor = fieldcolor;
+	superviseur = s;
   }
 }
 
@@ -171,7 +175,8 @@ class _FinalState extends State<Final> {
       mssg = "";
     });
     isLoading = true;
-    Response? isValidRequest = objtransf != null ? await objtransf.postMe() : await objlivraison?.postMe();
+    Response? isValidRequest = objtransf != null ? await objtransf.postMe(superviseur) 
+	: await objlivraison?.postMe(superviseur);
     setState(() {
       isLoading = false;
     });

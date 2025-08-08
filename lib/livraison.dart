@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soft/models/superviseur.dart';
 import 'package:soft/rest.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:soft/final_page.dart' as final_page;
@@ -7,18 +8,22 @@ late Color? background;
 late Color? fieldcolor;
 late Livraison objLivraison;
 late List<Widget> boucle;
+late Superviseur superviseur;
 
 class ScreenTransition{
   late Color? backgroundColor;
   late Color? fieldColor;
   late Livraison objlivraison;
   late List<Widget> boucleFromScreen2;
+  late Superviseur s;
+
   ScreenTransition({required this.backgroundColor, required this.fieldColor,
-  required this.objlivraison, required this.boucleFromScreen2}){
+  required this.objlivraison, required this.boucleFromScreen2, required this.s}){
     background = backgroundColor;
     fieldcolor = fieldColor;
     objLivraison = objlivraison;
 	boucle = boucleFromScreen2;
+	superviseur = s;
   }
 }
 
@@ -52,6 +57,7 @@ class _LivraisonScreenState extends State<LivraisonScreen> {
                 objLivraison.boucle[count.toString()] = oneBoucle[count];
                 Navigator.pushNamed(context, "/final",
                   arguments: final_page.ScreenTransition(backgroundColor: background, fieldcolor: fieldcolor,
+				  s: superviseur,
                     objectLivraison: objLivraison
                   )
                 );
