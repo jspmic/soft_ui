@@ -1,0 +1,52 @@
+name: Flutter CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          # Fix: Use a valid version. '12' is not available, use '17' (LTS) or '11' for most Flutter projects.
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'beta'
+          
+      - name: Write secrets to .env file
+        run: |
+          echo "CODE=${{ secrets.CODE }}" >> .env
+          echo "HOST=${{ secrets.HOST }}" >> .env
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk
+
+      - name: Rename APK for artifact
+        run: |
+          mkdir -p build/app/outputs/apk/release/
+          mv build/app/outputs/apk/release/app-release.apk build/app/outputs/apk/release/Soft.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Soft
+          path: build/app/outputs/apk/release/Soft.apk
