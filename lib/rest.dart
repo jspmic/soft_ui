@@ -190,7 +190,6 @@ Future<bool> isUser(Superviseur superviseur) async {
 				}
 			}
 			superviseur.setAnnonces(annonces);
-
 			cache[DISTRICT] = fields["districts"]!;
 			cache[TYPE_TRANSPORT] = fields["type_transports"]!;
 			cache[STOCK_CENTRAL] = fields["stocks"]!;
