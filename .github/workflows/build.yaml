@@ -31,8 +31,8 @@ jobs:
           
       - name: Write secrets to .env file
         run: |
-          echo "CODE=${{ secrets.CODE }}" >> assets/.env
-          echo "HOST=${{ secrets.HOST }}" >> assets/.env
+          echo "CODE=${{ secrets.CODE }}" >> .env
+          echo "HOST=${{ secrets.HOST }}" >> .env
 
       - name: Get dependencies
         run: flutter pub get
