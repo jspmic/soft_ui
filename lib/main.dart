@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:soft/custom_widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:soft/rest.dart';
 import 'package:crypto/crypto.dart';
 import 'package:soft/models/superviseur.dart';
@@ -32,7 +33,10 @@ Color? getDeviceTheme(BuildContext context){
   return isDarkMode ? Colors.grey[900] : Colors.white;
 }
 
-void main() => runApp(const Login());
+void main() async {
+	await dotenv.load(fileName: ".env");
+	runApp(const Login());
+}
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -119,8 +123,8 @@ class _LoginPageState extends State<LoginPage> {
     isLoading = true;
 
 	// Setting the typed values in the Superviseur s
-	s.nom_utilisateur = _uname;
-    String hashed = sha256.convert(utf8.encode(_pssw)).toString();
+	s.nom_utilisateur = username.text;
+    String hashed = sha256.convert(utf8.encode(pssw.text)).toString();
 	s.setPassword(hashed);
 
     bool isValidUser = await isUser(s);
