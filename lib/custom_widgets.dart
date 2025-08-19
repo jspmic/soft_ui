@@ -234,6 +234,9 @@ class _BoucleState extends State<Boucle> {
     );
   }
 }
+String formatStock(String stock){
+  return stock.replaceAll('_', ' ');
+}
 
 class CardList extends StatelessWidget {
   final Map data;
@@ -244,9 +247,24 @@ class CardList extends StatelessWidget {
     showDialog(context: context, builder: (context){
       return AlertDialog(
         title: Text(data["date"].toString()),
-        content: program == "Transfert" ?
-        Text("Logistic Official: ${data["logistic_official"]}\n\n${data["stock_central_suivants"].values}\n\nRetour: ${data["stock_central_retour"]}\n\nMotif: ${data["motif"]}"):
-        Text("Logistic Official: ${data["logistic_official"]}\n\nDistrict: ${data["district"]}\n\nRetour: ${data["stock_central_retour"]}\n\nMotif: ${data["motif"]}"),
+        content:
+		Column(
+			mainAxisSize: MainAxisSize.min,
+			crossAxisAlignment: CrossAxisAlignment.start,
+			children: [
+				Text("Logistic Official: ${data["logistic_official"]}"),
+				SizedBox(height: MediaQuery.of(context).size.height/25),
+				Text("Stock Central Départ: ${formatStock(data["stock_central_depart"])}"),
+				SizedBox(height: MediaQuery.of(context).size.height/25),
+				Text("Stock Central Retour: ${formatStock(data["stock_central_retour"])}"),
+				SizedBox(height: MediaQuery.of(context).size.height/25),
+				program == "Livraison" ? Text("District: ${data["district"]}")
+				: SizedBox(height: 0, width: 0),
+				SizedBox(height: MediaQuery.of(context).size.height/25),
+				data["motif"].toString().isEmpty ? Text("Aucun motif", style: TextStyle(color: Colors.blue)) 
+				: Text("Motif: ${data["motif"]}")
+			],
+		),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: Text("Fermer"))
         ],
@@ -261,8 +279,8 @@ class CardList extends StatelessWidget {
         elevation: 10.0,
         child: ListTile(
           trailing: Icon(Icons.navigate_next),
-          title: Text(data["stock_central_depart"].toString()),
-          subtitle: Text("Mouvement: ${data["numero_mouvement"].toString()}"),
+          title: Text(formatStock(data["stock_central_depart"].toString())),
+          subtitle: Text("Numéro du mouvement: ${data["numero_mouvement"].toString()}"),
           onTap: () => movementViewer(context),
         )
     );

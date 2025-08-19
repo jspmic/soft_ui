@@ -10,6 +10,8 @@ class Superviseur {
 	String nom_utilisateur;
 	String lot;
 	String? psswd;
+	List<String> annonces = [];
+
 	Superviseur({
 	required this.nom_utilisateur,
 	required this.id,
@@ -18,6 +20,9 @@ class Superviseur {
 	});
 	void setPassword(String pssw) {
 		psswd = pssw;
+	}
+	void setAnnonces(List<String> newAnnonces) {
+		annonces = newAnnonces;
 	}
     factory Superviseur.fromJson(Map<String, dynamic> json) => Superviseur(
         id: json["id"],

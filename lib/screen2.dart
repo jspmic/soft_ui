@@ -87,6 +87,38 @@ class _Screen2State extends State<Screen2> {
     return null;
   }
 
+  void showDialog(BuildContext context, String? announcement,
+  {Color? backgroundColor}) async {
+  	await showGeneralDialog(context: context,
+		pageBuilder: (context, _, __) {
+			return AlertDialog(
+				backgroundColor: backgroundColor,
+				titleTextStyle: TextStyle(
+					color: backgroundColor == Colors.white ? Colors.black
+					: Colors.white,
+					fontWeight: FontWeight.bold,
+					fontStyle: FontStyle.italic
+				),
+				title: announcement == null ? Text("Aucune annonce n'est disponible") 
+				: Text("Annonce du collecteur"),
+				content: announcement == null ? Text("Revenez lors de votre prochaine sesssion")
+				: Text(announcement),
+				contentTextStyle: TextStyle(
+					color: backgroundColor == Colors.white ? Colors.black
+					: Colors.white
+				),
+				scrollable: true,
+				actions: [
+					TextButton(
+						onPressed: () => Navigator.pop(context),
+						child: Text("Compris!"),
+					)
+				],
+			);
+		}
+	);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -101,6 +133,26 @@ class _Screen2State extends State<Screen2> {
       title: "Soft",
       home: Scaffold(
         backgroundColor: background,
+		floatingActionButton: FloatingActionButton(
+			onPressed: () {
+				if (superviseur.annonces.isNotEmpty) {
+					for (String annonce in superviseur.annonces) {
+						showDialog(context, annonce,
+							backgroundColor: background
+						);
+					}
+				}
+				else {
+					showDialog(context, null,
+						backgroundColor: background
+					);
+				}
+			},
+			mini: true,
+			child: superviseur.annonces.isEmpty ?
+			Icon(Icons.announcement_outlined)
+			: Icon(Icons.announcement, color: Colors.red),
+		),
         appBar: AppBar(
           title: Align(
             alignment: Alignment.topRight,
@@ -226,7 +278,8 @@ class _Screen2State extends State<Screen2> {
                             Navigator.pushNamed(context, "/livraison",
                                 arguments: livraison.ScreenTransition(backgroundColor: background, fieldColor: fieldColor,
                                   objlivraison: objLivraison,
-                                    boucleFromScreen2: boucleFromScreen2
+                                    boucleFromScreen2: boucleFromScreen2,
+									s: superviseur,
                                 )
                             );
                           },
@@ -248,6 +301,7 @@ class _Screen2State extends State<Screen2> {
                             Navigator.pushNamed(context, "/transfert",
                               arguments: transfert.ScreenTransition(backgroundColor: background,
                                 fieldcolor: fieldColor,
+                                s: superviseur,
                                 objtransf: objTransfert
                               )
                             );

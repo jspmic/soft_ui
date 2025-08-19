@@ -31,21 +31,21 @@ class Transfert{
   late String? motif;
   Transfert();
 
-  Future<http.Response> postMe() async{
+  Future<http.Response> postMe(Superviseur s) async{
     Uri url = Uri.parse("$HOST/api/transferts");
 		http.Response response = await http.post(
 			url,
 		  headers: <String, String>{
 			  'Content-Type': 'application/json; charset=UTF-8'
 		  },
-		  body: jsonEncode(<String, dynamic>{
+		  body: json.encode(<String, dynamic>{
 			'date': date,
 			'plaque': plaque,
 			'logistic_official': logistic_official,
 			'numero_mouvement': numero_mouvement,
 			'numero_journal_du_camion': numero_journal,
 			'stock_central_depart': stock_central_depart,
-			'stock_central_suivants': jsonEncode(stock_central_suivants),
+			'stock_central_suivants': stock_central_suivants,
 			'stock_central_retour': stock_central_retour,
 			'photo_mvt': photo_mvt,
 			'photo_journal': photo_journal,
@@ -75,7 +75,7 @@ class Livraison{
   late String? motif;
   Livraison();
 
-  Future<http.Response> postMe() async{
+  Future<http.Response> postMe(Superviseur s) async{
     Uri url = Uri.parse("$HOST/api/livraisons");
 		http.Response response = await http.post(
 			url,
@@ -90,15 +90,16 @@ class Livraison{
 			  'numero_mouvement': numero_mouvement,
 			  'numero_journal_du_camion': numero_journal,
 			  'stock_central_depart': stock_central_depart,
-			  'boucle': jsonEncode(boucle),
+			  'boucle': boucle,
 			  'stock_central_retour': stock_central_retour,
 			  'photo_mvt': photo_mvt,
 			  'photo_journal': photo_journal,
 			  'type_transport': type_transport,
+			  'lot': s.lot,
 			  'user': user,
 			  'motif': motif
 			})
-		).timeout(Duration(minutes: 1, seconds: 20));
+		).timeout(Duration(minutes: 2, seconds: 20));
 		return response;
   }
 }
@@ -127,12 +128,16 @@ Future<List> getLivraison(String date, Superviseur superviseur) async {
 	var url = Uri.parse("$HOST/api/livraisons?date=$date&userId=${superviseur.id}");
 	try {
 		http.Response response = await http.get(url);
-		var decoded = [];
+		List _decoded = [];
+		List decoded = [];
 		if (response.statusCode == 200) {
-		String data = response.body;
-		decoded = jsonDecode(data);
+			String data = response.body;
+			_decoded = jsonDecode(data);
+			for (String d in _decoded) {
+				decoded.add(jsonDecode(d));
+			}
 		} else {
-		decoded = [];
+			decoded = [];
 		}
 		return decoded;
 	}
@@ -164,9 +169,9 @@ Uri url = Uri.parse("$HOST/api/image");
 }
 
 Future<bool> isUser(Superviseur superviseur) async {
-	await dotenv.load(fileName: ".env");
   String code = dotenv.env["CODE"].toString();
   var url = Uri.parse("$HOST/api/list");
+  print(url);
   try{
 	  http.Response response = await http.get(url,
 			headers: {"x-api-key": code,
@@ -178,6 +183,13 @@ Future<bool> isUser(Superviseur superviseur) async {
 			Map<String, dynamic> fields = jsonDecode(response.body);
 			superviseur.id = fields["id"]!;
 			superviseur.nom = fields["nom"]!;
+			List<String> annonces = [];
+			for (var annonce in fields["annonces"]) {
+				if (annonce != null) {
+					annonces.add(annonce.toString());
+				}
+			}
+			superviseur.setAnnonces(annonces);
 			cache[DISTRICT] = fields["districts"]!;
 			cache[TYPE_TRANSPORT] = fields["type_transports"]!;
 			cache[STOCK_CENTRAL] = fields["stocks"]!;

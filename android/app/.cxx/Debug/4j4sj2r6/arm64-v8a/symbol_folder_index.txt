@@ -1,1 +1,0 @@
-/home/jaspe/StudioProjects/soft_ui/build/app/intermediates/cxx/Debug/4j4sj2r6/obj/arm64-v8a
