@@ -171,7 +171,6 @@ Uri url = Uri.parse("$HOST/api/image");
 Future<bool> isUser(Superviseur superviseur) async {
   String code = dotenv.env["CODE"].toString();
   var url = Uri.parse("$HOST/api/list");
-  print(url);
   try{
 	  http.Response response = await http.get(url,
 			headers: {"x-api-key": code,
