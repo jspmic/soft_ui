@@ -112,10 +112,10 @@ Future<List> getTransfert(String date, Superviseur superviseur) async {
 		http.Response response = await http.get(url);
 		var decoded = [];
 		if (response.statusCode == 200) {
-		String data = response.body;
-		decoded = jsonDecode(data);
+			String data = response.body;
+			decoded = jsonDecode(data);
 		} else {
-		decoded = [];
+			decoded = [];
 		}
 		return decoded;
 	}
