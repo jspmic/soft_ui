@@ -24,14 +24,12 @@ class DatePicker extends StatefulWidget {
 }
 
 class _DatePickerState extends State<DatePicker> {
-  DateTime? _date;
   Future _selectDate(BuildContext context) async => showDatePicker(context: context,
       firstDate: DateTime(2005), lastDate: DateTime(2090), initialDate: DateTime.now()
   ).then((DateTime? selected) {
-    if (selected != null && selected != _date) {
+    if (selected != null && selected != dateSelected) {
       setState(() {
-        _date = selected;
-        dateSelected = _date;
+        dateSelected = selected;
       });
     }
   });
@@ -43,7 +41,7 @@ class _DatePickerState extends State<DatePicker> {
         children: [
           OutlinedButton(onPressed: () => _selectDate(context),
             style: ElevatedButton.styleFrom(backgroundColor: background),
-            child: Text(_date == null ? "Date" : "${_date?.day}/${_date?.month}/${_date?.year}",
+            child: Text(dateSelected == null ? "Date" : "${dateSelected?.day}/${dateSelected?.month}/${dateSelected?.year}",
                 style: TextStyle(color: background == Colors.white ? Colors.black : Colors.white),
               )),
         ],
@@ -252,6 +250,8 @@ class CardList extends StatelessWidget {
 			mainAxisSize: MainAxisSize.min,
 			crossAxisAlignment: CrossAxisAlignment.start,
 			children: [
+				Text("Numéro du journal du camion: ${data["numero_journal_du_camion"]}"),
+				SizedBox(height: MediaQuery.of(context).size.height/25),
 				Text("Logistic Official: ${data["logistic_official"]}"),
 				SizedBox(height: MediaQuery.of(context).size.height/25),
 				Text("Stock Central Départ: ${formatStock(data["stock_central_depart"])}"),

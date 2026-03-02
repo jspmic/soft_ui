@@ -185,6 +185,7 @@ class _FinalState extends State<Final> {
       setState(() {
 		mssgColor = Colors.green;
         mssg = "Success!";
+		dateSelected = null;
       });
     }
     else {

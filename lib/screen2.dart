@@ -65,6 +65,11 @@ class _Screen2State extends State<Screen2> {
   String? _validateField(String? value){
     return value == null || value.isEmpty ? "Champ obligatoire" : null;
   }
+
+  String? _validateDate(DateTime? date) {
+  	return date == null ? "La date est obligatoire" : null;
+  }
+
   String? _validatePlaque(String? value){
     if (value == null || value.isEmpty){
       return "Champ obligatoire";
@@ -193,7 +198,7 @@ class _Screen2State extends State<Screen2> {
                 Column(
                     children: [
 					  SizedBox(height: MediaQuery.of(context).size.height/10),
-                      DatePicker(),
+					  DatePicker(),
                       Container(
                           padding: const EdgeInsets.all(5),
                           margin: const EdgeInsets.all(20),

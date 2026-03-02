@@ -88,9 +88,11 @@ class _MovementsState extends State<Movements> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(onPressed: (){
+			  dateSelected = null;
               Navigator.pop(context, '/second');
         }, icon: Icon(Icons.arrow_back, color: Colors.black,)),
             IconButton(onPressed: (){
+			  dateSelected = null;
               Navigator.popUntil(context, (route){
                 return route.isFirst;
               });
