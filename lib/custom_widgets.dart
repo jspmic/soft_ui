@@ -252,6 +252,8 @@ class CardList extends StatelessWidget {
 			mainAxisSize: MainAxisSize.min,
 			crossAxisAlignment: CrossAxisAlignment.start,
 			children: [
+				Text("Numéro du journal du camion: ${data["numero_journal_du_camion"]}"),
+				SizedBox(height: MediaQuery.of(context).size.height/25),
 				Text("Logistic Official: ${data["logistic_official"]}"),
 				SizedBox(height: MediaQuery.of(context).size.height/25),
 				Text("Stock Central Départ: ${formatStock(data["stock_central_depart"])}"),
