@@ -1,12 +1,14 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/intl.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:soft/models/superviseur.dart';
 import 'package:soft/excel_fields.dart';
 
 // Address definition
 String? HOST;
+String? CODE;
 
 init() async{
 	cache[LIVRAISON_RETOUR] = ["Livraison", "Retour"];
@@ -36,6 +38,7 @@ class Transfert{
 		http.Response response = await http.post(
 			url,
 		  headers: <String, String>{
+				'x-api-key': CODE!,
 			  'Content-Type': 'application/json; charset=UTF-8'
 		  },
 		  body: json.encode(<String, dynamic>{
@@ -80,6 +83,7 @@ class Livraison{
 		http.Response response = await http.post(
 			url,
 			headers: <String, String>{
+				'x-api-key': CODE!,
 			  'Content-Type': 'application/json; charset=UTF-8'
 			},
 			body: jsonEncode(<String, dynamic>{
@@ -169,17 +173,16 @@ Uri url = Uri.parse("$HOST/api/image");
 }
 
 Future<bool> isUser(Superviseur superviseur) async {
-  String code = dotenv.env["CODE"].toString();
   var url = Uri.parse("$HOST/api/list");
   try{
 	  http.Response response = await http.get(url,
-			headers: {"x-api-key": code,
-				"Authorization": "${superviseur.nom_utilisateur}:${superviseur.psswd}"}
+			headers: {"Authorization": "${superviseur.nom_utilisateur}:${superviseur.psswd}"}
 		).timeout(Duration(seconds: 30), onTimeout: (){
 		  return http.Response("No connection", 404);
 	  });
 	  if (response.statusCode == 200) {
 			Map<String, dynamic> fields = jsonDecode(response.body);
+			CODE = fields["code"]!;
 			superviseur.id = fields["id"]!;
 			superviseur.nom = fields["nom"]!;
 			List<String> annonces = [];
@@ -204,4 +207,29 @@ Future<bool> isUser(Superviseur superviseur) async {
   on Exception{
   	return false;
   }
+}
+
+Future<bool> submitModificationRequest(int movementId, String description,
+		String superviseurName, String mouvementName) async {
+	String formattedDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+	try {
+		final response = await http.post(
+			Uri.parse('$HOST/api/modifications'),
+			headers: {
+				'x-api-key': CODE!,
+				'Content-Type': 'application/json',
+			},
+			body: jsonEncode({
+				'mouvement_id': movementId,
+				'mouvement_name': mouvementName,
+				'description': description,
+				'requested_at': formattedDate,
+				'superviseur': superviseurName
+			}),
+		);
+
+		return response.statusCode == 201;
+	} catch (e) {
+		return false;
+	}
 }

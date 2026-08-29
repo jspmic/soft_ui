@@ -134,7 +134,7 @@ class _MovementsState extends State<Movements> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: content.map((element) => Padding(
                 padding: const EdgeInsets.all(12.0),
-                    child: CardList(data: element, program: program.first),
+                    child: CardList(data: element, program: program.first, superviseur: superviseur),
     )).toList()
     )
     ]))
