@@ -1,5 +1,7 @@
 import 'package:soft/excel_fields.dart';
 import 'package:flutter/material.dart';
+import 'package:soft/models/superviseur.dart';
+import 'package:soft/rest.dart';
 import 'package:soft/screen2.dart';
 import 'package:soft/transfert.dart' as transfert;
 import 'package:soft/livraison.dart' as livraison;
@@ -238,33 +240,105 @@ String formatStock(String stock){
   return stock.replaceAll('_', ' ');
 }
 
-class CardList extends StatelessWidget {
+class CardList extends StatefulWidget {
   final Map data;
   final String program;
-  const CardList({super.key, required this.data, required this.program});
+  final Superviseur superviseur;
+
+  const CardList({super.key, required this.data, required this.program,
+  required this.superviseur});
+
+  @override
+  State<CardList> createState() => _CardListState();
+}
+
+class _CardListState extends State<CardList> {
+  Color? editColor;
+  void modify(BuildContext context, int id) {
+    // 1. Initialize the controller correctly
+    final TextEditingController controller = TextEditingController();
+	bool isLoading  = false;
+
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Modifications pour ce mouvement"),
+            content: TextFormField(
+              controller: controller,
+              maxLines: 15, // Assign the controller
+              decoration: const InputDecoration(
+                hintText: "Décrivez les changements à apporter...",
+                border: OutlineInputBorder(),
+              ),
+              style: TextStyle(
+                  color: background == Colors.white ? Colors.black : Colors.white
+              ),
+            ),
+            actions: [
+              IconButton(
+                  onPressed: () async {
+                    final String requestedChange = controller.text;
+
+                    if (requestedChange.isEmpty) {
+                      popItUp(context, "Veuillez saisir une description.");
+                      return;
+                    }
+
+
+                    // 2. Logic to send to Python Backend
+                    // This is where you call your POST request
+                    setState(() {
+                      isLoading = true;
+                    });
+                    bool success = await submitModificationRequest(id, requestedChange,
+                    widget.superviseur.nom_utilisateur, widget.program);
+
+                    setState(() {
+                      isLoading = false;
+                    });
+
+                    Navigator.pop(context);
+
+                    if (success) {
+                      editColor = Colors.green;
+                      popItUp(context, "Demande de modification envoyée à l'admin.");
+                    } else {
+                      editColor = Colors.red;
+                      popItUp(context, "Erreur lors de l'envoi.");
+                    }
+                  },
+                  icon: isLoading ? CircularProgressIndicator() : Icon(Icons.arrow_forward)
+              )
+            ],
+            scrollable: true,
+          );
+        }
+    );
+  }
 
   void movementViewer(BuildContext context){
     showDialog(context: context, builder: (context){
       return AlertDialog(
-        title: Text(data["date"].toString()),
+        title: Text(widget.data["date"].toString()),
         content:
 		Column(
 			mainAxisSize: MainAxisSize.min,
 			crossAxisAlignment: CrossAxisAlignment.start,
 			children: [
-				Text("Numéro du journal du camion: ${data["numero_journal_du_camion"]}"),
+				Text("Numéro du journal du camion: ${widget.data["numero_journal_du_camion"]}"),
 				SizedBox(height: MediaQuery.of(context).size.height/25),
-				Text("Logistic Official: ${data["logistic_official"]}"),
+				Text("Logistic Official: ${widget.data["logistic_official"]}"),
 				SizedBox(height: MediaQuery.of(context).size.height/25),
-				Text("Stock Central Départ: ${formatStock(data["stock_central_depart"])}"),
+				Text("Stock Central Départ: ${formatStock(widget.data["stock_central_depart"])}"),
 				SizedBox(height: MediaQuery.of(context).size.height/25),
-				Text("Stock Central Retour: ${formatStock(data["stock_central_retour"])}"),
+				Text("Stock Central Retour: ${formatStock(widget.data["stock_central_retour"])}"),
 				SizedBox(height: MediaQuery.of(context).size.height/25),
-				program == "Livraison" ? Text("District: ${data["district"]}")
+				widget.program == "Livraison" ? Text("District: ${widget.data["district"]}")
 				: SizedBox(height: 0, width: 0),
 				SizedBox(height: MediaQuery.of(context).size.height/25),
-				data["motif"].toString().isEmpty ? Text("Aucun motif", style: TextStyle(color: Colors.blue)) 
-				: Text("Motif: ${data["motif"]}")
+				widget.data["motif"].toString().isEmpty ? Text("Aucun motif", style: TextStyle(color: Colors.blue))
+				: Text("Motif: ${widget.data["motif"]}")
 			],
 		),
         actions: [
@@ -276,13 +350,18 @@ class CardList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color? defaultColor = background! == Colors.grey[900] ? Colors.white : Colors.black;
     return Card(
       color: background,
         elevation: 10.0,
         child: ListTile(
+          leading: IconButton(
+            onPressed: () => modify(context, widget.data["id"]),
+              icon: Icon(Icons.edit_document, color: editColor ?? defaultColor)
+          ),
           trailing: Icon(Icons.navigate_next),
-          title: Text(formatStock(data["stock_central_depart"].toString())),
-          subtitle: Text("Numéro du mouvement: ${data["numero_mouvement"].toString()}"),
+          title: Text(formatStock(widget.data["stock_central_depart"].toString())),
+          subtitle: Text("Numéro du mouvement: ${widget.data["numero_mouvement"].toString()}"),
           onTap: () => movementViewer(context),
         )
     );
