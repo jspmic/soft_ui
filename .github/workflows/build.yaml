@@ -29,10 +29,13 @@ jobs:
         with:
           channel: 'beta'
           
-      - name: Write secrets to .env file
+      - shell: bash
+        env: 
+          CODE: $[{ secrets.CODE }]
+          HOST: $[{ secrets.HOST }]
         run: |
-          echo "CODE=${{ secrets.CODE }}" >> .env
-          echo "HOST=${{ secrets.HOST }}" >> .env
+          echo "CODE=$CODE" >> .env
+          echo "HOST=$HOST" >> .env
           
       - name: Get dependencies
         run: flutter pub get
