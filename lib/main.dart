@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:soft/custom_widgets.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:soft/rest.dart';
 import 'package:crypto/crypto.dart';
 import 'package:soft/models/superviseur.dart';
@@ -34,7 +33,6 @@ Color? getDeviceTheme(BuildContext context){
 }
 
 void main() async {
-	await dotenv.load(fileName: ".env");
 	runApp(const Login());
 }
 

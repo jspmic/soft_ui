@@ -1,6 +1,5 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:soft/custom_widgets.dart';
 import 'package:soft/models/superviseur.dart';
@@ -12,8 +11,7 @@ String? CODE;
 
 init() async{
 	cache[LIVRAISON_RETOUR] = ["Livraison", "Retour"];
-	await dotenv.load(fileName: ".env");
-	HOST = dotenv.env["HOST"].toString();
+	HOST = String.fromEnvironment('HOST');
 }
 
 
